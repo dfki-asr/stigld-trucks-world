@@ -1,0 +1,443 @@
+prefix ex: <http://example.org/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix st: <http://dfki.de/stigld#>
+prefix stigFN: <http://www.dfki.de/func#>
+
+
+#########################################################
+##
+##  COMPLETE MOVE TASK
+##
+########################################################
+DELETE {
+  ?moveTask a ex:Task , ex:MoveTask ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:destination ?destination .
+  ?truck ex:located ?origin .
+}
+INSERT {
+  ?truck ex:located ?destination .
+}
+WHERE {
+
+  ?truck a ex:Truck ; ex:located ?origin .
+  ?moveTask a ex:Task , ex:MoveTask ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:destination ?destination .
+
+  FILTER(NOW() > ?endTime)
+} ;
+
+#########################################################
+##
+##  COMPLETE PICKUP TASK
+##
+########################################################
+
+DELETE {
+  ?task a ex:Task , ex:PickupTask ; ex:assignedTo ?truck ; ex:startTime ?startTime ; ex:endTime ?endTime .
+}
+WHERE {
+  ?task a ex:Task , ex:PickupTask ; ex:assignedTo ?truck ;  ex:startTime ?startTime ; ex:endTime ?endTime .
+  FILTER(NOW() > ?endTime)
+} ;
+
+#########################################################
+##
+##  COMPLETE DELIVER TASK
+##
+########################################################
+
+DELETE {
+  ?task a ex:Task , ex:DeliverTask ; ex:assignedTo ?truck ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:package ?package.
+  ?package a ex:Package ; ex:located ?location .
+  ?package st:carries ?stigma .
+  ?stigma  a st:Stigma , ex:UrgencyStigma ; st:concentration ?conc .
+}
+INSERT{
+  ?deliveryNotice a ex:DeliveryNotice ; ex:package ?package ; ex:deadline ?deadline ; ex:timePassed ?timePassed ; ex:timeLeft ?timeLeft .
+}
+WHERE {
+  {SELECT (UUID() as ?deliveryNotice) ?task WHERE {
+      ?task a ex:Task , ex:DeliverTask .
+  }}
+  ?task a ex:Task , ex:DeliverTask ; ex:assignedTo ?truck ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:package ?package.
+  ?package a ex:Package ; ex:located ?location .
+  ex:start a ex:startTime; rdf:value ?start .
+  BIND((stigFN:duration_secs(?start, NOW())) as ?timePassed)
+  OPTIONAL {
+      ex:start a ex:startTime; rdf:value ?start .
+      BIND((stigFN:duration_secs(?start, NOW())) as ?timePassed)
+      ?goal a ex:Goal ; ex:payload ?package ; ex:deadline ?deadline .
+      BIND((?deadline - ?timePassed) as ?timeLeft ) .
+  }
+  OPTIONAL {
+      ?package st:carries ?stigma .
+      ?stigma  a st:Stigma , ex:UrgencyStigma ; st:concentration ?conc .
+      FILTER (isBlank(?stigma))
+  }
+  FILTER (NOW() > ?endTime)
+};
+
+#########################################################
+##
+##  COMPLETE UNLOAD TASK
+##
+########################################################
+
+DELETE {
+	?finishedTask a  ex:Task , ex:UnloadTask ; ex:startTime ?started ; ex:endTime ?ended ; ex:assignedTo ?truck .
+    ?area ex:status ex:occupied .
+	?package ex:located ?area .
+}
+INSERT {
+	?package ex:located ?location .
+    ?area ex:status ex:empty .
+	?deliverTask a ex:Task,  ex:DeliverTask ; ex:startTime ?ended ; ex:endTime ?endDeliver ; ex:assignedTo ?truck ; ex:package ?package .
+}
+WHERE {
+	?finishedTask a ex:Task,  ex:UnloadTask ; ex:startTime ?started ; ex:endTime ?ended ; ex:assignedTo ?truck .
+
+	?truck a ex:Truck ; ex:located ?location .
+    ?area ex:status ex:occupied .
+
+	{SELECT ?truck ?area ?package WHERE {
+		?truck a ex:Truck ; ex:located ?location ; ex:areas ?area .
+		?area a ex:Area ; ex:position ?position .
+		?package ex:located ?area .
+		FILTER NOT EXISTS {
+			?truck ex:areas ?otherArea .
+			?otherArea a ex:Area ; ex:position ?closerPosition .
+			?otherPackage ex:located ?otherArea .
+			FILTER (?closerPosition < ?position )
+		}
+	}}
+
+	OPTIONAL {SELECT DISTINCT (UUID() as ?deliverTask) ?package ?truck ?location WHERE {
+	  ?truck ex:located ?location ; ex:areas ?area .
+		?package ex:located ?area .
+		?goal a ex:Goal  ; ex:payload ?package ; ex:destination ?location .
+	}}
+
+	BIND (?ended + "PT0.2S"^^xsd:duration as ?endDeliver)
+	FILTER(NOW() > ?ended )
+} ;
+
+##################################################################
+# UNLOAD UNTIL PARCEL IN TRUNK THAT BELONGS TO LOCATION IS UNLOADED
+##################################################################
+
+INSERT {
+	?task a ex:Task , ex:UnloadTask ; ex:startTime ?now ; ex:endTime ?endTime ; ex:assignedTo ?truck .
+}
+WHERE {
+
+	{SELECT (UUID() as ?task) ?truck WHERE {
+		?truck a ex:Truck ; ex:located ?location .
+		FILTER NOT EXISTS {
+			?anyTask ex:assignedTo ?truck .
+		}
+	}}
+
+	?truck a ex:Truck  ; ex:areas ?area ; ex:located ?location .
+	?package ex:located ?area .
+	?goal ex:payload ?package ; ex:destination ?location .
+
+	BIND(NOW() as ?now)
+	BIND (?now + "PT0.2S"^^xsd:duration as ?endTime)
+} ;
+
+
+###########################################################
+## IF THERE ARE PARCELS IN THE CURRENT LOCATION OF WHICH
+## THE DEADLINE HAS EXCEEDED THE CONFIDENCE INTERVAL,
+## EMPTY AREAS UNTIL THERE IS SPACE FOR THE URGENT PARCELS
+###########################################################
+
+INSERT {
+  ?task a ex:Task , ex:UnloadTask ; ex:startTime ?now ; ex:endTime ?endTime ; ex:assignedTo ?truck .
+} WHERE {
+
+  ## TRUCK AND RESPECTIVE LOCATION TO WHICH NUMBER OF PACKAGES AND FREE AREAS WILL BE BOUND
+  ?truck a ex:Truck ; ex:located ?location .
+
+  ## COUNT NUMBER OF FREE PACKAGES IN THE AREA OF WHICH THE DEADLINE IS OUTSIDE THE CONFIDENCE INTERVAL
+  {SELECT (COUNT(?package) as ?numPackages) ?location WHERE {
+     ?truck a ex:Truck ; ex:located ?location .
+     ?package a ex:Package ; ex:located ?location ; st:carries [ a ex:UrgencyStigma ] .
+  } GROUP BY ?location}
+
+  ## COUNT NUMBER OF FREE AREAS IN THE TRUCK
+  {SELECT (COUNT(?area) as ?freeAreas) ?truck WHERE {
+    ?truck a ex:Truck ; ex:areas ?area .
+    ?area ex:status ex:empty .
+  } GROUP BY ?truck }
+
+  ## COUNT NUMBER OF FREE AREAS IN THE TRUCK
+  {SELECT (COUNT(?area) as ?totalAreas) ?truck WHERE {
+    ?truck a ex:Truck ; ex:areas ?area .
+
+    ## PREVENT TRUCK FROM UNLOADING URGENT PACKAGES
+    FILTER NOT EXISTS {
+      ?package a ex:Package ; ex:located ?area ; st:carries ex:UrgencyStigma .
+    }
+  } GROUP BY ?truck }
+
+  ## TASK BLANK NODE
+  {SELECT DISTINCT (UUID() as ?task) ?truck WHERE {
+    ?truck a ex:Truck
+  }}
+
+  ## ONLY ASSIGN TASK TO TRUCK IF TRUCK DOES NOT HAVE ENOUGH FREE AREAS
+  FILTER(?numPackages > ?freeAreas && ?freeAreas < ?totalAreas)
+
+  BIND(NOW() as ?now)
+  BIND (?now + "PT0.2s"^^xsd:duration as ?endTime)
+} ;
+
+##################################################################################
+##
+## UNLESS THERE IS ENOUGH SPACE IN THE BACK TO FILL WITH NON URGENT PARCELS,
+## START LOADING THE TRUCK WITH URGENT PARCELS, CLOSEST DESTINATIONS LAST
+##
+###################################################################################
+
+
+DELETE {
+    ?area ex:status ex:empty.
+    ?package ex:located ?location.
+}
+INSERT {
+    ?task a ex:Task , ex:PickupTask; ex:startTime ?now; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:driveTime ?driveTime.
+    ?area ex:status ex:occupied.
+    ?package ex:located ?area.
+
+} WHERE{
+     { SELECT (UUID() as ?task) ?truck ?location WHERE {
+        ?truck a ex:Truck ; ex:located ?location .
+        FILTER NOT EXISTS {
+          ?anyTask ex:assignedTo ?truck ;
+        }
+    }}
+
+    { SELECT (COUNT(?empty) as ?numEmpty) ?truck WHERE {
+        ?truck a ex:Truck ; ex:areas ?empty .
+        ?empty a ex:Area ; ex:status ex:empty .
+    } GROUP BY ?truck}
+
+    { SELECT (COUNT(?package) as ?numUrgent) ?location ?truck WHERE {
+        ?package a ex:Package ; ex:located ?location ; st:carries [ a ex:UrgencyStigma ; ex:forTruck ?truck ] .
+    } GROUP BY ?location ?truck}
+
+    FILTER( ?numEmpty <= ?numUrgent)
+
+    { SELECT ?truck ?package ?location WHERE {
+      ?truck a ex:Truck ; ex:located ?location .
+      ?package a ex:Package; ex:located ?location ; st:carries [ a ex:UrgencyStigma ; ex:forTruck ?truck ] .
+      ?location st:adjacentTo ?dest; ex:driveTime [ ex:destination ?dest; rdf:value  ?driveTime] .
+      ?g a ex:Goal; ex:payload ?package; ex:destination ?dest ; ex:deadline ?deadline.
+    } ORDER BY DESC(?driveTime) LIMIT 1}
+
+    ### Choose innermost area in the truck loading bay
+    {SELECT * WHERE {
+        ?truck a ex:Truck; ex:located ?location; ex:areas ?area.
+        ?area a ex:Area; ex:status ex:empty; ex:position ?pos.
+    }ORDER BY DESC(?pos) LIMIT 1}
+
+    BIND(NOW() as ?now)
+    BIND (?now + "PT0.2S"^^xsd:duration as ?endTime)
+} ;
+
+##################################################################################
+##
+## IF IT WAS DETERMINED THAT THERE IS STILL SPACE IN THE BACK TO FILL UP WITH NON
+## URGENT PARCELS, DO SO NOW
+##
+###################################################################################
+
+DELETE {
+    ?area ex:status ex:empty.
+    ?package ex:located ?location.
+}
+INSERT {
+    ?task a ex:Task , ex:PickupTask; ex:startTime ?now; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:driveTime ?driveTime.
+    ?area ex:status ex:occupied.
+    ?package ex:located ?area.
+
+} WHERE{
+    { SELECT (UUID() as ?task) ?truck ?location WHERE {
+        ?truck a ex:Truck ; ex:located ?location .
+        FILTER NOT EXISTS {
+          ?anyTask ex:assignedTo ?truck ;
+        }
+    }}
+
+    { SELECT (COUNT(?empty) as ?numEmpty) ?truck WHERE {
+        ?truck a ex:Truck ; ex:areas ?empty .
+        ?empty a ex:Area ; ex:status ex:empty .
+    } GROUP BY ?truck}
+
+    FILTER( ?numEmpty > 0)
+
+    { SELECT ?truck ?package ?location WHERE {
+      ?truck a ex:Truck ; ex:located ?location .
+      ?package a ex:Package; ex:located ?location .
+      FILTER NOT EXISTS {
+        ?package st:carries [ a ex:UrgencyStigma ; ex:forTruck ?truck ] .
+      }
+      ?location st:adjacentTo ?dest; ex:driveTime [ ex:destination ?dest; rdf:value  ?driveTime] .
+      ?g a ex:Goal; ex:payload ?package; ex:destination ?dest .
+    } ORDER BY DESC(?driveTime) LIMIT 1}
+
+    ### Choose innermost area in the truck loading bay
+    {SELECT * WHERE {
+        ?truck a ex:Truck; ex:located ?location; ex:areas ?area.
+        ?area a ex:Area; ex:status ex:empty; ex:position ?pos.
+    }ORDER BY DESC(?pos) LIMIT 1}
+
+    BIND(NOW() as ?now)
+    BIND (?now + "PT0.2S"^^xsd:duration as ?endTime)
+} ;
+
+###########################################################
+##
+## MOVE TO NEXT LOCATION WHERE PACKAGE NEEDS TO BE UNLOADED URGENTLY
+##
+###########################################################
+
+INSERT {
+	?task a ex:Task , ex:MoveTask ; ex:assignedTo ?truck ; ex:destination ?destination ; ex:startTime ?startTime ; ex:endTime ?endTime .
+}
+WHERE {
+
+  ## CREATE UNIQUE TASK NODE PER TRUCK THAT FULFILLS QUERY AND HAS NOT YET A TASK ASSIGNED
+  { SELECT DISTINCT (UUID() as ?task) ?truck WHERE {
+      ?truck a ex:Truck .
+      FILTER NOT EXISTS {
+        ?t a ex:Task ; ex:assignedTo ?truck .
+      }
+  }}
+
+  ## DETERMINE DESTINATION BY URGENT PARCEL WITH MOST INTENSE MARKER
+  { SELECT ?truck ?destination WHERE {
+        ?truck a ex:Truck ; ex:areas ?area ; ex:located ?location .
+        ?package a ex:Package ; ex:located ?area ; st:carries [a ex:UrgencyStigma ; st:concentration ?conc ] .
+      ?goal a ex:Goal ; ex:payload ?package ; ex:destination ?destination .
+	} ORDER BY DESC(?conc) LIMIT 1}
+
+  ?truck a ex:Truck ; ex:located ?location .
+  ?location ex:driveTime [ex:destination ?destination ; rdf:value ?driveTime ] .
+
+  BIND(NOW() as ?startTime)
+  BIND(STRDT(CONCAT("PT", str(xsd:integer(?driveTime)), "S"), xsd:duration) as ?durationString)
+  BIND((?startTime + ?durationString) as ?endTime)
+} ;
+
+###########################################################
+##
+## MOVE TO NEXT LOCATION WHERE PACKAGE NEEDS TO BE PICKED UP URGENTLY
+##
+###########################################################
+
+INSERT {
+	?task a ex:Task , ex:MoveTask ; ex:assignedTo ?truck ; ex:destination ?destination ; ex:startTime ?startTime ; ex:endTime ?endTime .
+}
+WHERE {
+  {SELECT DISTINCT ?truck (UUID() as ?task) WHERE {
+    ?truck a ex:Truck .
+    FILTER NOT EXISTS {
+      ?anyTask ex:assignedTo ?truck .
+    }
+		FILTER NOT EXISTS {
+			?truck ex:located ?location .
+			?package a ex:Package ; ex:located ?location ; ex:carries [ a st:UrgencyStigma ; ex:forTruck ?truck ] .
+		}
+    FILTER EXISTS {
+      ?truck ex:areas [ex:status ex:empty] .
+    }
+  }}
+
+  {SELECT ?destination ?truck ?driveTime WHERE {
+    ?truck a ex:Truck ; ex:located ?location .
+    ?package a ex:Package ; ex:located ?destination ; st:carries [a ex:UrgencyStigma; ex:forTruck ?truck ; st:concentration ?conc ] .
+    ?destination a ex:Location ; ex:driveTime [ ex:destination ?location ; rdf:value ?driveTime ] .
+    FILTER( ?destination != ?location)
+  } ORDER BY DESC(?conc) LIMIT 1}
+
+  BIND(NOW() as ?startTime)
+  BIND(STRDT(CONCAT("PT", str(xsd:integer(?driveTime)), "S"), xsd:duration) as ?durationString)
+  BIND((?startTime + ?durationString) as ?endTime)
+} ;
+
+###########################################################
+##
+## MOVE TO NEXT LOCATION WHERE PACKAGE IN BACK OF TRUCK NEEDS TO GO
+##
+###########################################################
+
+INSERT {
+	?task a ex:Task , ex:MoveTask ; ex:assignedTo ?truck ; ex:destination ?destination ; ex:startTime ?now ; ex:endTime ?endTime .
+}
+WHERE {
+
+	{SELECT DISTINCT ?truck (UUID() as ?task) WHERE {
+		?truck a ex:Truck .
+	}}
+
+	?truck a ex:Truck ; ex:areas ?closestLoaded ; ex:located [
+			a ex:Location ; st:adjacentTo ?destination ; ex:driveTime [
+				ex:destination ?destination ;
+				rdf:value ?driveTime
+			]
+		] .
+
+	FILTER NOT EXISTS {
+		?anyTask a ex:Task ; ex:assignedTo ?truck .
+	}
+
+	?package a ex:Package ; ex:located ?closestLoaded .
+	?closestLoaded ex:position ?closestPosition .
+
+	?goal a ex:Goal ; ex:payload ?package ; ex:destination ?destination .
+	FILTER NOT EXISTS {
+		?truck ex:areas ?closerArea .
+		?closerPackage a ex:Package ; ex:located ?closerArea .
+		?closerArea ex:position ?closerPosition .
+		FILTER (?closerPosition < ?closestPosition)
+	}
+
+	BIND(NOW() as ?now)
+	BIND(STRDT(CONCAT("PT", str(xsd:integer(?driveTime)), "S"), xsd:duration) as ?durationString)
+	BIND((?now + ?durationString) as ?endTime )
+};
+###########################################################
+##
+## MOVE TO LOCATION WITH LARGEST PILE OF PACKAGES
+##
+###########################################################
+
+INSERT {
+	?task a ex:Task , ex:MoveTask ; ex:assignedTo ?truck ; ex:destination ?destination ; ex:startTime ?startTime ; ex:endTime ?endTime .
+}
+WHERE {
+
+  { SELECT DISTINCT (UUID() as ?task) ?truck WHERE {
+      ?truck a ex:Truck .
+      FILTER NOT EXISTS {
+        ?t a ex:Task ; ex:assignedTo ?truck .
+      }
+  }}
+
+  {SELECT ?truck ?destination WHERE {
+	  ?truck a ex:Truck ; ex:located ?origin .
+	  ?destination a ex:Location .
+		{ SELECT (COUNT(?package) as ?parcelsAtDestination) ?destination WHERE {
+				?package a ex:Package ; ex:located ?destination .
+		} GROUP BY ?destination }
+		FILTER(?origin != ?destination)
+	}  ORDER BY DESC(?parcelsAtDestination) LIMIT 1}
+
+  ?truck ex:located [ ex:driveTime [ex:destination ?destination ; rdf:value ?driveTime ] ] .
+
+
+  BIND(NOW() as ?startTime)
+  BIND(STRDT(CONCAT("PT", str(xsd:integer(?driveTime)), "S"), xsd:duration) as ?durationString)
+  BIND((?startTime + ?durationString) as ?endTime)
+}

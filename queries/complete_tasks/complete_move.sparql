@@ -1,0 +1,25 @@
+prefix ex: <http://example.org/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix st: <http://dfki.de/stigld#>
+prefix stigFN: <http://www.dfki.de/func#>
+
+DELETE {
+  ?moveTask a ex:Task , ex:MoveTask ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:destination ?destination .
+  ?truck ex:located ?origin .
+  ex:Clock rdf:value ?clocktime .
+}
+INSERT {
+  ?truck ex:located ?destination .
+  ex:Clock rdf:value ?endTime.
+}
+WHERE {
+
+  ?truck a ex:Truck ; ex:located ?origin .
+  ?moveTask a ex:Task , ex:MoveTask ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:destination ?destination .
+  OPTIONAL {  ex:Clock rdf:value ?clocktime . }
+  FILTER NOT EXISTS {
+    ?otherTask a ex:Task ; ex:endTime ?earlier .
+    FILTER (?earlier < ?endTime)
+  }
+}

@@ -1,0 +1,34 @@
+prefix ex: <http://example.org/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix st: <http://dfki.de/stigld#>
+prefix stigFN: <http://www.dfki.de/func#>
+
+INSERT {
+	?task a ex:Task , ex:MoveTask ; ex:assignedTo ?truck ; ex:destination ?destination ; ex:startTime ?now ; ex:endTime ?endTime .
+}
+WHERE {
+
+  { SELECT DISTINCT (UUID() as ?task) ?truck WHERE {
+      ?truck a ex:Truck .
+      FILTER NOT EXISTS {
+        ?t a ex:Task ; ex:assignedTo ?truck .
+      }
+  }}
+
+  {SELECT ?truck ?destination WHERE {
+	  ?truck a ex:Truck ; ex:located ?origin .
+	  ?destination a ex:Location .
+		{ SELECT (COUNT(?package) as ?parcelsAtDestination) ?destination WHERE {
+				?package a ex:Package ; ex:located ?destination .
+		} GROUP BY ?destination }
+		FILTER(?origin != ?destination)
+	}  ORDER BY DESC(?parcelsAtDestination) LIMIT 1}
+
+  ?truck ex:located [ ex:driveTime [ex:destination ?destination ; rdf:value ?driveTime ] ] .
+
+
+  OPTIONAL { ex:Clock rdf:value ?clocktime	}
+	BIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)
+	BIND((?now + ?driveTime) as ?endTime )
+}

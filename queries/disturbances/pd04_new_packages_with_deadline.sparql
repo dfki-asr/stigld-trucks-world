@@ -1,0 +1,25 @@
+prefix ex: <http://example.org/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix st: <http://dfki.de/stigld#>
+prefix stigFN: <http://www.dfki.de/func#>
+
+DELETE {
+  ex:Disturbance ex:happens ?when .
+}
+INSERT {
+  ex:distPackage_1 a ex:Package ; ex:located ex:l1 .
+  ex:distPackage_2 a ex:Package ; ex:located ex:l1 .
+
+  ex:distGoal_1 a ex:Goal ; ex:payload ex:distPackage_1 ; ex:destination ex:l2 ; ex:deadline ?deadline .
+  ex:distGoal_2 a ex:Goal ; ex:payload ex:distPackage_2 ; ex:destination ex:l3 ; ex:deadline ?deadline .
+}
+WHERE {
+    ex:Disturbance ex:happens ?when .
+    ex:Clock rdf:value ?clocktime .
+    FILTER(?clocktime >= ?when)
+
+    ex:l2 a ex:Location ; ex:driveTime [ ex:destination ex:l1 ; rdf:value ?l1_l2 ].
+    ex:l2 a ex:Location ; ex:driveTime [ ex:destination ex:l3; rdf:value ?l2_l3 ].
+    BIND(?clocktime + ((?l1_l2 * 2 + ?l2_l3) * 1.2) as ?deadline)
+ }

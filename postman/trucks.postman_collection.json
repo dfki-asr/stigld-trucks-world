@@ -1,0 +1,719 @@
+{
+	"info": {
+		"_postman_id": "7c276f75-683b-485f-9620-4f101c75e94d",
+		"name": "trucks",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Initialization",
+			"item": [
+				{
+					"name": "Initialize Problem One",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\n\r\nprefix : <http://dfki.de/stigld/trucksexample#>\r\n\r\nDELETE { ?s ?p ?o }\r\nWHERE {?s ?p ?o } ;\r\n\r\nINSERT DATA {\r\n    :NUM_STEPS a :step_counter ; rdf:value 0 .\r\n\r\n    ex:confidence a ex:confidenceFactor ; rdf:value \"1.5\"^^xsd:double .\r\n    \r\n    ex:truck1 a ex:Truck ;\r\n\tex:areas ex:a1, ex:a2; \r\n\tex:located ex:l2.\r\n\t\r\n\r\nex:a1 a ex:Area; \r\n\tex:position 1; ex:status ex:empty.\r\nex:a2 a ex:Area;\r\n\tex:position 2; ex:status ex:empty.\r\n\r\nex:package1 a ex:Package;\r\n\tex:located ex:l3.\r\n\t\r\nex:package2 a ex:Package;\r\n\tex:located ex:l3.\r\n\t\r\nex:package3 a ex:Package;\r\n\tex:located ex:l1.\r\n\t\r\nex:l1 a ex:Location;\r\n\tst:adjacentTo   ex:l2, ex:l3;\r\n\tex:driveTime   [a ex:pairValue; \r\n\t\t\t\t\t ex:destination ex:l2; \r\n\t\t\t\t\t rdf:value  \"406.3\"^^xsd:double];\r\n\tex:driveTime   [a ex:pairValue; \r\n\t\t\t\t\t ex:destination ex:l3; \r\n\t\t\t\t\t rdf:value  \"73.1\"^^xsd:double].\r\n\t\r\nex:l2 a ex:Location;\r\n\tst:adjacentTo   ex:l1, ex:l3;\r\n\tex:driveTime   [a ex:pairValue; \r\n\t\t\t\t\t ex:destination ex:l1; \r\n\t\t\t\t\t rdf:value  \"406.3\"^^xsd:double];\r\n\tex:driveTime   [a ex:pairValue; \r\n\t\t\t\t\t ex:destination ex:l3; \r\n\t\t\t\t\t rdf:value  \"356.8\"^^xsd:double].\r\n\t\t\t\t\t \r\nex:l3 a ex:Location;\r\n\tst:adjacentTo   ex:l2, ex:l1;\r\n\tex:driveTime   [a ex:pairValue; \r\n\t\t\t\t\t ex:destination ex:l2; \r\n\t\t\t\t\t rdf:value  \"356.8\"^^xsd:double];\r\n\tex:driveTime   [a ex:pairValue; \r\n\t\t\t\t\t ex:destination ex:l1; \r\n\t\t\t\t\t rdf:value  \"73.1\"^^xsd:double].\t\t\t\t\t\r\nex:g1 a ex:Goal;\r\n\tex:payload ex:package1;\r\n\tex:destination ex:l1;\r\n\tex:deadline \"919.7\"^^xsd:double.\r\n\t\r\nex:g2 a ex:Goal ;\r\n\tex:payload ex:package2;\r\n\tex:destination ex:l2;\r\n\tex:deadline \"919.7\"^^xsd:double.\r\n\t\r\nex:g3 a ex:Goal;\r\n\tex:payload ex:package3;\r\n\tex:destination ex:l2;\r\n\tex:deadline \"1813.7\"^^xsd:double.\r\n\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Initialize Problem Two",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\n\r\nprefix : <http://dfki.de/stigld/trucksexample#>\r\n\r\nDELETE { ?s ?p ?o }\r\nWHERE {?s ?p ?o } ;\r\n\r\nINSERT DATA {\r\n\r\n:NUM_STEPS a :step_counter ; rdf:value 0 .\r\n\r\nex:confidence a ex:confidenceFactor ; rdf:value \"1.5\"^^xsd:double .\r\n\r\nex:truck1 a ex:Truck;\r\n    ex:areas ex:a1, ex:a2;\r\n    ex:located ex:l3.\r\n\r\nex:a1 a ex:Area ;\r\n    ex:position 1 ;\r\n    ex:status ex:empty .\r\n\r\nex:a2 a ex:Area;\r\n    ex:position 2 ;\r\n    ex:status ex:empty .\r\n\r\nex:package1 a ex:Package;\r\n    ex:located ex:l1.\r\n\r\nex:package2 a ex:Package;\r\n    ex:located ex:l1.\r\n\r\nex:package3 a ex:Package;\r\n    ex:located ex:l1.\r\n\r\nex:package4 a ex:Package;\r\n    ex:located ex:l1.\r\n\r\nex:l1 a ex:Location;\r\n    st:adjacentTo   ex:l2, ex:l3;\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l2;\r\n                     rdf:value  \"449.7\"^^xsd:double];\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l3;\r\n                     rdf:value  \"316.4\"^^xsd:double].\r\n\r\nex:l2 a ex:Location;\r\n    st:adjacentTo   ex:l1, ex:l3;\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l1;\r\n                     rdf:value  \"449.7\"^^xsd:double];\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l3;\r\n                     rdf:value  \"170.2\"^^xsd:double].\r\n\r\nex:l3 a ex:Location;\r\n    st:adjacentTo   ex:l2, ex:l1;\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l2;\r\n                     rdf:value  \"170.2\"^^xsd:double];\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l1;\r\n                     rdf:value  \"316.4\"^^xsd:double].\r\nex:g1 a ex:Goal;\r\n    ex:payload ex:package1;\r\n    ex:destination ex:l2;\r\n    ex:deadline \"842.7\"^^xsd:double.\r\n\r\nex:g2 a ex:Goal;\r\n    ex:payload ex:package2;\r\n    ex:destination ex:l2.\r\n\r\nex:g3 a ex:Goal;\r\n    ex:payload ex:package3;\r\n    ex:destination ex:l2.\r\n\r\nex:g4 a ex:Goal;\r\n    ex:payload ex:package4;\r\n    ex:destination ex:l3.\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Initialize Problem Three",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\n\r\nprefix : <http://dfki.de/stigld/trucksexample#>\r\n\r\nDELETE { ?s ?p ?o }\r\nWHERE {?s ?p ?o } ;\r\n\r\nINSERT DATA {\r\n    \r\n:NUM_STEPS a :step_counter ; rdf:value 0 .\r\n\r\nex:confidence a ex:confidenceFactor ; rdf:value \"2\"^^xsd:double .\r\n\r\nex:Disturbance ex:happens \"200.0\"^^xsd:double .\r\n\r\nex:truck1 a ex:Truck;\r\n    ex:areas ex:a1, ex:a2;\r\n    ex:located ex:l2.\r\n\r\nex:a1 a ex:Area;\r\n    ex:position 1 ;\r\n    ex:status ex:empty .\r\n\r\nex:a2 a ex:Area;\r\n    ex:position 2 ;\r\n    ex:status ex:empty .\r\n\r\nex:package1 a ex:Package;\r\n    ex:located ex:l3.\r\n\r\nex:package2 a ex:Package;\r\n    ex:located ex:l3.\r\n\r\nex:package3 a ex:Package;\r\n    ex:located ex:l2.\r\n\r\nex:package4 a ex:Package;\r\n    ex:located ex:l2.\r\n\r\nex:package5 a ex:Package;\r\n        ex:located ex:l1.\r\n\r\nex:l1 a ex:Location;\r\n    st:adjacentTo   ex:l2, ex:l3;\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l2;\r\n                     rdf:value  \"583.0\"^^xsd:double];\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l3;\r\n                     rdf:value  \"315.5\"^^xsd:double].\r\n\r\nex:l2 a ex:Location;\r\n    st:adjacentTo   ex:l1, ex:l3;\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l1;\r\n                     rdf:value  \"583.0\"^^xsd:double];\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l3;\r\n                     rdf:value  \"280.3\"^^xsd:double].\r\n\r\nex:l3 a ex:Location;\r\n    st:adjacentTo   ex:l2, ex:l1;\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l2;\r\n                     rdf:value  \"280.3\"^^xsd:double];\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l1;\r\n                     rdf:value  \"315.5\"^^xsd:double].\r\nex:g1 a ex:Goal;\r\n    ex:payload ex:package1;\r\n    ex:destination ex:l2 .\r\n\r\nex:g2 a ex:Goal;\r\n    ex:payload ex:package2;\r\n    ex:destination ex:l2;\r\n    ex:deadline \"616.7\"^^xsd:double .\r\n\r\nex:g3 a ex:Goal;\r\n    ex:payload ex:package3;\r\n    ex:destination ex:l3;\r\n    ex:deadline \"925.1\"^^xsd:double .\r\n\r\nex:g4 a ex:Goal;\r\n    ex:payload ex:package4;\r\n    ex:destination ex:l3;\r\n    ex:deadline \"925.1\"^^xsd:double .\r\n\r\nex:g5 a ex:Goal;\r\n      ex:payload ex:package5;\r\n      ex:destination ex:l3.\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Initialize Problem Four",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\n\r\nprefix : <http://dfki.de/stigld/trucksexample#>\r\n\r\nDELETE { ?s ?p ?o }\r\nWHERE {?s ?p ?o } ;\r\n\r\nINSERT DATA {\r\n:NUM_STEPS a :step_counter ; rdf:value 0 .\r\nex:confidence a ex:confidenceFactor ; rdf:value \"1.5\"^^xsd:double .\r\nex:Disturbance ex:happens \"950.0\"^^xsd:double .\r\n\r\nex:truck1 a ex:Truck;\r\n    ex:areas ex:a1, ex:a2;\r\n    ex:located ex:l2.\r\n\r\nex:a1 a ex:Area;\r\n    ex:position 1 ;\r\n    ex:status ex:empty .\r\n\r\nex:a2 a ex:Area;\r\n    ex:position 2 ;\r\n    ex:status ex:empty .\r\n\r\nex:package1 a ex:Package;\r\n    ex:located ex:l2.\r\n\r\nex:package2 a ex:Package;\r\n    ex:located ex:l2.\r\n\r\nex:package3 a ex:Package;\r\n    ex:located ex:l3.\r\n\r\nex:package4 a ex:Package;\r\n    ex:located ex:l3.\r\n\r\nex:package5 a ex:Package;\r\n        ex:located ex:l3.\r\n\r\nex:package6 a ex:Package;\r\n        ex:located ex:l3.\r\n\r\nex:l1 a ex:Location;\r\n    st:adjacentTo   ex:l2, ex:l3;\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l2;\r\n                     rdf:value  \"792.7\"^^xsd:double];\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l3;\r\n                     rdf:value  \"445.1\"^^xsd:double].\r\n\r\nex:l2 a ex:Location;\r\n    st:adjacentTo   ex:l1, ex:l3;\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l1;\r\n                     rdf:value  \"792.7\"^^xsd:double];\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l3;\r\n                     rdf:value  \"488.4\"^^xsd:double].\r\n\r\nex:l3 a ex:Location;\r\n    st:adjacentTo   ex:l2, ex:l1;\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l2;\r\n                     rdf:value  \"488.4\"^^xsd:double];\r\n    ex:driveTime   [a ex:pairValue;\r\n                     ex:destination ex:l1;\r\n                     rdf:value  \"445.1\"^^xsd:double].\r\nex:g1 a ex:Goal;\r\n    ex:payload ex:package1;\r\n    ex:destination ex:l3;\r\n    ex:deadline \"537.3\"^^xsd:double .\r\n\r\nex:g2 a ex:Goal;\r\n    ex:payload ex:package2;\r\n    ex:destination ex:l3 .\r\n\r\nex:g3 a ex:Goal;\r\n    ex:payload ex:package3;\r\n    ex:destination ex:l1 .\r\n\r\nex:g4 a ex:Goal;\r\n    ex:payload ex:package4;\r\n    ex:destination ex:l1;\r\n    ex:deadline \"1026.9\"^^xsd:double .\r\n\r\nex:g5 a ex:Goal;\r\n    ex:payload ex:package5;\r\n    ex:destination ex:l1.\r\n\r\nex:g6 a ex:Goal;\r\n    ex:payload ex:package6;\r\n    ex:destination ex:l2;\r\n    ex:deadline \"2878.2\"^^xsd:double .\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Initialize Problem Five",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\n\r\nprefix : <http://dfki.de/stigld/trucksexample#>\r\n\r\nDELETE { ?s ?p ?o }\r\nWHERE {?s ?p ?o } ;\r\n\r\nINSERT DATA {\r\n:NUM_STEPS a :step_counter ; rdf:value 0 .\r\n\r\nex:confidence a ex:confidenceFactor ; rdf:value \"1.5\"^^xsd:double .\r\nex:Disturbance ex:happens \"500\"^^xsd:double .\r\nex:truck1 a ex:Truck;\r\n\tex:areas ex:a1, ex:a2;  \r\n\tex:located ex:l3.\r\n\t\r\nex:a1 a ex:Area; \r\n\tex:position 1;\r\n\tex:status ex:empty .\r\nex:a2 a ex:Area;\r\n\tex:position 2;\r\n\tex:status ex:empty .\r\n\t\r\nex:package1 a ex:Package;\r\n\tex:located ex:l2.\r\n\t\r\nex:package2 a ex:Package;\r\n\tex:located ex:l2.\r\n\t\r\nex:package3 a ex:Package;\r\n\tex:located ex:l3.\r\n\t\r\nex:package4 a ex:Package;\r\n\tex:located ex:l3.\r\n\t\r\nex:package5 a ex:Package;\r\n\tex:located ex:l2.\r\n\r\nex:package6 a ex:Package;\r\n\tex:located ex:l2.\r\n\r\nex:package7 a ex:Package;\r\n\tex:located ex:l2.\t\r\n\t\r\nex:l1 a ex:Location;\r\n\tst:adjacentTo   ex:l2, ex:l3;\r\n\tex:driveTime   [a ex:pairValue; \r\n\t\t\t\t\t ex:destination ex:l2; \r\n\t\t\t\t\t rdf:value  \"215.3\"^^xsd:double];\r\n\tex:driveTime   [a ex:pairValue; \r\n\t\t\t\t\t ex:destination ex:l3; \r\n\t\t\t\t\t rdf:value  \"289.6\"^^xsd:double].\r\n\t\r\nex:l2 a ex:Location;\r\n\tst:adjacentTo   ex:l1, ex:l3;\r\n\tex:driveTime   [a ex:pairValue; \r\n\t\t\t\t\t ex:destination ex:l1; \r\n\t\t\t\t\t rdf:value  \"215.3\"^^xsd:double];\r\n\tex:driveTime   [a ex:pairValue; \r\n\t\t\t\t\t ex:destination ex:l3; \r\n\t\t\t\t\t rdf:value  \"306.5\"^^xsd:double].\r\n\t\t\t\t\t \r\nex:l3 a ex:Location;\r\n\tst:adjacentTo   ex:l2, ex:l1;\r\n\tex:driveTime   [a ex:pairValue; \r\n\t\t\t\t\t ex:destination ex:l2; \r\n\t\t\t\t\t rdf:value  \"306.5\"^^xsd:double];\r\n\tex:driveTime   [a ex:pairValue; \r\n\t\t\t\t\t ex:destination ex:l1; \r\n\t\t\t\t\t rdf:value  \"289.6\"^^xsd:double].\t\t\t\t\t\r\nex:g1 a ex:Goal;\r\n\tex:payload ex:package1;\r\n\tex:destination ex:l3.\r\n\t\r\n\t\r\nex:g2 a ex:Goal;\r\n\tex:payload ex:package2;\r\n\tex:destination ex:l1;\r\n\tex:deadline \"992.8\"^^xsd:double.\r\n\t\r\nex:g3 a ex:Goal;\r\n\tex:payload ex:package3;\r\n\tex:destination ex:l1;\r\n\tex:deadline \"1866.7\"^^xsd:double.\r\n\t\r\nex:g4 a ex:Goal;\r\n\tex:payload ex:package4;\r\n\tex:destination ex:l2.\r\n\t\r\nex:g5 a ex:Goal;\r\n\tex:payload ex:package5;\r\n\tex:destination ex:l3.\r\n\t\r\nex:g6 a ex:Goal;\r\n\tex:payload ex:package6;\r\n\tex:destination ex:l3.\r\n\t\r\nex:g7 a ex:Goal;\r\n\tex:payload ex:package7;\r\n\tex:destination ex:l3;\r\n\tex:deadline \"2878.0\"^^xsd:double.\t\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Complete Tasks",
+			"item": [
+				{
+					"name": "Complete Move Task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\nDELETE {\r\n  ?moveTask a ex:Task , ex:MoveTask ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:destination ?destination .\r\n  ?truck ex:located ?origin .\r\n  ex:Clock rdf:value ?clocktime .\r\n}\r\nINSERT {\r\n  ?truck ex:located ?destination .\r\n  ex:Clock rdf:value ?endTime.\r\n}\r\nWHERE {\r\n\r\n  ?truck a ex:Truck ; ex:located ?origin .\r\n  ?moveTask a ex:Task , ex:MoveTask ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:destination ?destination .\r\n  OPTIONAL {  ex:Clock rdf:value ?clocktime . }\r\n  FILTER NOT EXISTS {\r\n    ?otherTask a ex:Task ; ex:endTime ?earlier .\r\n    FILTER (?earlier < ?endTime)\r\n  }\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Complete Pickup Task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\nDELETE {\r\n  ?task a ex:Task , ex:PickupTask ; ex:assignedTo ?truck ; ex:startTime ?startTime ; ex:endTime ?endTime .\r\n  ex:Clock rdf:value ?clocktime .\r\n}\r\nINSERT {\r\n  ex:Clock rdf:value ?endTime.\r\n}\r\nWHERE {\r\n  ?task a ex:Task , ex:PickupTask ; ex:assignedTo ?truck ;  ex:startTime ?startTime ; ex:endTime ?endTime .\r\n  OPTIONAL {  ex:Clock rdf:value ?clocktime . }\r\n  FILTER NOT EXISTS {\r\n\t\t?otherTask a ex:Task ; ex:endTime ?earlier .\r\n\t\tFILTER (?earlier < ?endTime)\r\n\t}\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Complete Deliver Task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\nDELETE {\r\n  ?task a ex:Task , ex:DeliverTask ; ex:assignedTo ?truck ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:package ?package.\r\n  ?package a ex:Package ; ex:located ?location .\r\n  ?package st:carries ?stigma .\r\n  ?stigma  a st:Stigma , ex:UrgencyStigma ; st:concentration ?conc .\r\n  ex:Clock rdf:value ?clocktime .\r\n}\r\nINSERT{\r\n  ?deliveryNotice a ex:DeliveryNotice ; ex:package ?package ; ex:deadline ?deadline ; ex:timePassed ?timePassed ; ex:timeLeft ?timeLeft .\r\n  ex:Clock rdf:value ?endTime.\r\n}\r\nWHERE {\r\n  {SELECT (UUID() as ?deliveryNotice) ?task WHERE {\r\n      ?task a ex:Task , ex:DeliverTask .\r\n  }}\r\n  ?task a ex:Task , ex:DeliverTask ; ex:assignedTo ?truck ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:package ?package.\r\n  ?package a ex:Package ; ex:located ?location .\r\n  OPTIONAL {  ex:Clock rdf:value ?clocktime . }\r\n  BIND(IF(bound(?clocktime), ?clocktime, 0) as ?timePassed)\r\n  OPTIONAL {\r\n      ex:Clock rdf:value ?clocktime .\r\n      BIND(IF(bound(?clocktime), ?clocktime, 0) as ?timePassed)\r\n      ?goal a ex:Goal ; ex:payload ?package ; ex:deadline ?deadline .\r\n      BIND((?deadline - ?timePassed) as ?timeLeft ) .\r\n  }\r\n  OPTIONAL {\r\n      ?package st:carries ?stigma .\r\n      ?stigma  a st:Stigma , ex:UrgencyStigma ; st:concentration ?conc .\r\n      FILTER (isBlank(?stigma))\r\n  }\r\n  FILTER NOT EXISTS {\r\n    ?otherTask a ex:Task ; ex:endTime ?earlier .\r\n    FILTER (?earlier < ?endTime)\r\n  }\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Complete Unload Task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\nDELETE {\r\n\t?finishedTask a  ex:Task , ex:UnloadTask ; ex:startTime ?started ; ex:endTime ?ended ; ex:assignedTo ?truck .\r\n    ?area ex:status ex:occupied .\r\n\t?package ex:located ?area .\r\n\tex:Clock rdf:value ?clocktime .\r\n}\r\nINSERT {\r\n\t?package ex:located ?location .\r\n  ?area ex:status ex:empty .\r\n\t?deliverTask a ex:Task,  ex:DeliverTask ; ex:startTime ?ended ; ex:endTime ?endDeliver ; ex:assignedTo ?truck ; ex:package ?package .\r\n\tex:Clock rdf:value ?ended.\r\n}\r\nWHERE {\r\n\t?finishedTask a ex:Task,  ex:UnloadTask ; ex:startTime ?started ; ex:endTime ?ended ; ex:assignedTo ?truck .\r\n\r\n\t?truck a ex:Truck ; ex:located ?location .\r\n    ?area ex:status ex:occupied .\r\n  OPTIONAL {  ex:Clock rdf:value ?clocktime . }\r\n\t{SELECT ?truck ?area ?package WHERE {\r\n\t\t?truck a ex:Truck ; ex:located ?location ; ex:areas ?area .\r\n\t\t?area a ex:Area ; ex:position ?position .\r\n\t\t?package ex:located ?area .\r\n\t\tFILTER NOT EXISTS {\r\n\t\t\t?truck ex:areas ?otherArea .\r\n\t\t\t?otherArea a ex:Area ; ex:position ?closerPosition .\r\n\t\t\t?otherPackage ex:located ?otherArea .\r\n\t\t\tFILTER (?closerPosition < ?position )\r\n\t\t}\r\n\t}}\r\n\r\n\tOPTIONAL {SELECT DISTINCT (UUID() as ?deliverTask) ?package ?truck ?location WHERE {\r\n\t  ?truck ex:located ?location ; ex:areas ?area .\r\n\t\t?package ex:located ?area .\r\n\t\t?goal a ex:Goal  ; ex:payload ?package ; ex:destination ?location .\r\n\t}}\r\n\r\n\tFILTER NOT EXISTS {\r\n\t\t?otherTask a ex:Task ; ex:endTime ?earlier .\r\n\t\tFILTER (?earlier < ?ended)\r\n\t}\r\n\tBIND((?ended + 0.2) as ?endDeliver )\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Evolution",
+			"item": [
+				{
+					"name": "Urgency on Location",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\n### DELETE OLD URGENCY STIGMATA\r\nCONSTRUCT {  \r\n  ?package st:carries ?urgency .\r\n  ?urgency a st:Stigma , ex:UrgencyStigma ; st:concentration ?value ; ex:forTruck ?truck .\r\n} WHERE {\r\n  {SELECT DISTINCT (BNODE() as ?urgency) ?truck ?package WHERE {\r\n       ?truck a ex:Truck .\r\n       ?package a ex:Package .\r\n   }}\r\n\r\n  ex:confidence a ex:confidenceFactor ; rdf:value ?confidence .\r\n  OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n  BIND(IF(bound(?clocktime), ?clocktime, 0) as ?timePassed)\r\n\r\n  ?package a ex:Package ; ex:located ?pickupLocation .\r\n  OPTIONAL { ?truck a ex:Truck ; ex:located [ a ex:Location ; ex:driveTime [ ex:destination ?pickupLocation ; rdf:value ?t ] ] .}\r\n  BIND(IF(bound(?t),?t,0) as ?driveTimeToPickup)\r\n  ?goal a ex:Goal ; ex:payload ?package ; ex:deadline ?deadline ; ex:destination [a ex:Location ; ex:driveTime [ ex:destination ?pickupLocation ; rdf:value ?driveTimeToDeliver ] ].\r\n  BIND ((?driveTimeToPickup + ?driveTimeToDeliver) as ?totalDriveTime)\r\n  BIND((?deadline - ?timePassed - ?totalDriveTime ) as ?remaining)\r\n  BIND((?totalDriveTime * ?confidence) as ?confidentRequired)\r\n\r\n  ## A parcel counts as \"urgent\" as soon as the remaining time is below the confidence threshold\r\n  FILTER(?remaining < ?confidentRequired)\r\n\r\n  BIND(IF(?remaining < 0 , 0, ?remaining) as ?r)\r\n  BIND((1.0 / (1.0+?r)) as ?value)\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/query/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"query",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Urgency on Truck Area",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\nCONSTRUCT {\r\n  ?package st:carries ?urgency .\r\n  ?urgency a st:Stigma , ex:UrgencyStigma ; st:concentration ?value ; ex:forTruck ?truck .\r\n} WHERE {\r\n  {SELECT DISTINCT (BNODE() as ?urgency) ?truck ?package WHERE {\r\n       ?truck a ex:Truck .\r\n       ?package a ex:Package .\r\n   }}\r\n\r\n   ex:confidence a ex:confidenceFactor ; rdf:value ?confidence .\r\n   ex:start a ex:startTime; rdf:value ?start .\r\n   ?truck a ex:Truck ; ex:areas ?area ; ex:located ?location .\r\n   ?package a ex:Package ; ex:located ?area .\r\n   ?location ex:driveTime [ ex:destination ?destination ; rdf:value ?driveTime ] .\r\n   ?goal a ex:Goal ; ex:payload ?package ; ex:destination ?destination ; ex:deadline ?deadline .\r\n\r\n   OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n   BIND(IF(bound(?clocktime), ?clocktime, 0) as ?timePassed)   \r\n   BIND((?deadline-?timePassed) as ?timeRemaining)\r\n   BIND(?confidence * ?driveTime as ?estimateRequired)\r\n   BIND(IF(?timeRemaining - ?driveTime > 0 , ?timeRemaining - ?driveTime , 0) as ?estimateLeft)\r\n   BIND((1.0/(1.0 + ?estimateLeft)) as ?value)\r\n   FILTER(?timeRemaining < ?estimateRequired)\r\n   FILTER(?location != ?destination)\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/query/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"query",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Move",
+			"item": [
+				{
+					"name": "Move Random",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\nINSERT {\r\n\t?task a ex:Task , ex:MoveTask ; ex:assignedTo ?truck ; ex:destination ?destination ; ex:startTime ?now ; ex:endTime ?endTime .\r\n}\r\nWHERE {\r\n\r\n  { SELECT DISTINCT (UUID() as ?task) ?truck WHERE {\r\n      ?truck a ex:Truck .\r\n      FILTER NOT EXISTS {\r\n        ?t a ex:Task ; ex:assignedTo ?truck .\r\n      }\r\n  }}\r\n\r\n  {SELECT ?truck ?destination WHERE {\r\n\t  ?truck a ex:Truck ; ex:located ?origin .\r\n\t  ?destination a ex:Location .\r\n\t\t{ SELECT (COUNT(?package) as ?parcelsAtDestination) ?destination WHERE {\r\n\t\t\t\t?package a ex:Package ; ex:located ?destination .\r\n\t\t} GROUP BY ?destination }\r\n\t\tFILTER(?origin != ?destination)\r\n\t}  ORDER BY DESC(?parcelsAtDestination) LIMIT 1}\r\n\r\n  ?truck ex:located [ ex:driveTime [ex:destination ?destination ; rdf:value ?driveTime ] ] .\r\n\r\n\r\n  OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n\tBIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n\tBIND((?now + ?driveTime) as ?endTime )\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Move To Next Unload",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\nINSERT {\r\n\t?task a ex:Task , ex:MoveTask ; ex:assignedTo ?truck ; ex:destination ?destination ; ex:startTime ?now ; ex:endTime ?endTime .\r\n}\r\nWHERE {\r\n\r\n\t{SELECT DISTINCT ?truck (UUID() as ?task) WHERE {\r\n\t\t?truck a ex:Truck .\r\n\t}}\r\n\r\n\t?truck a ex:Truck ; ex:areas ?closestLoaded ; ex:located [\r\n\t\t\ta ex:Location ; st:adjacentTo ?destination ; ex:driveTime [\r\n\t\t\t\tex:destination ?destination ;\r\n\t\t\t\trdf:value ?driveTime\r\n\t\t\t]\r\n\t\t] .\r\n\r\n\tFILTER NOT EXISTS {\r\n\t\t?anyTask a ex:Task ; ex:assignedTo ?truck .\r\n        \r\n\t}\r\n    FILTER EXISTS{\r\n        ?truck ex:areas [ ex:status ex:occupied] .\r\n    }\r\n\r\n\t?package a ex:Package ; ex:located ?closestLoaded .\r\n\t?closestLoaded ex:position ?closestPosition .\r\n\r\n\t?goal a ex:Goal ; ex:payload ?package ; ex:destination ?destination .\r\n\tFILTER NOT EXISTS {\r\n\t\t?truck ex:areas ?closerArea .\r\n\t\t?closerPackage a ex:Package ; ex:located ?closerArea .\r\n\t\t?closerArea ex:position ?closerPosition .\r\n\t\tFILTER (?closerPosition < ?closestPosition)\r\n\t}\r\n\r\n  OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n\tBIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n\tBIND((?now + ?driveTime) as ?endTime )\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Move To Urgent Unload",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\nINSERT {\r\n\t?task a ex:Task , ex:MoveTask ; ex:assignedTo ?truck ; ex:destination ?destination ; ex:startTime ?now ; ex:endTime ?endTime .\r\n}\r\nWHERE {\r\n\r\n  ## CREATE UNIQUE TASK NODE PER TRUCK THAT FULFILLS QUERY AND HAS NOT YET A TASK ASSIGNED\r\n  { SELECT DISTINCT (UUID() as ?task) ?truck WHERE {\r\n      ?truck a ex:Truck .\r\n      FILTER NOT EXISTS {\r\n        ?t a ex:Task ; ex:assignedTo ?truck .\r\n      }\r\n  }}\r\n\r\n  ## DETERMINE DESTINATION BY URGENT PARCEL WITH MOST INTENSE MARKER\r\n  { SELECT ?truck ?destination WHERE {\r\n\t\t\t?truck a ex:Truck ; ex:areas ?area ; ex:located ?location .\r\n\t\t\t?package a ex:Package ; ex:located ?area ; st:carries [a ex:UrgencyStigma ; st:concentration ?conc ] .\r\n            ?goal a ex:Goal ; ex:payload ?package ; ex:destination ?destination .\r\n\t} ORDER BY DESC(?conc) LIMIT 1}\r\n\r\n  ?truck a ex:Truck ; ex:located ?location .\r\n  ?location ex:driveTime [ex:destination ?destination ; rdf:value ?driveTime ] .\r\n\r\n  OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n\tBIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n\tBIND((?now + ?driveTime) as ?endTime )\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Move To Urgent Pickup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\nINSERT {\r\n\t?task a ex:Task , ex:MoveTask ; ex:assignedTo ?truck ; ex:destination ?destination ; ex:startTime ?now ; ex:endTime ?endTime .\r\n}\r\nWHERE {\r\n  {SELECT DISTINCT ?truck (UUID() as ?task) WHERE {\r\n    ?truck a ex:Truck .\r\n    FILTER NOT EXISTS {\r\n      ?anyTask ex:assignedTo ?truck .\r\n    }\r\n\t\tFILTER NOT EXISTS {\r\n\t\t\t?truck ex:located ?location .\r\n\t\t\t?package a ex:Package ; ex:located ?location ; ex:carries [ a st:UrgencyStigma ; ex:forTruck ?truck ] .\r\n\t\t}\r\n    FILTER EXISTS {\r\n      ?truck ex:areas [ex:status ex:empty] .\r\n    }\r\n  }}\r\n\r\n  {SELECT ?destination ?truck ?driveTime WHERE {\r\n    ?truck a ex:Truck ; ex:located ?location .\r\n    ?package a ex:Package ; ex:located ?destination ; st:carries [a ex:UrgencyStigma; ex:forTruck ?truck ; st:concentration ?conc ] .\r\n    ?destination a ex:Location ; ex:driveTime [ ex:destination ?location ; rdf:value ?driveTime ] .\r\n    FILTER( ?destination != ?location)\r\n  } ORDER BY DESC(?conc) LIMIT 1}\r\n\r\n  OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n\tBIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n\tBIND((?now + ?driveTime) as ?endTime )\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Unload",
+			"item": [
+				{
+					"name": "Unload For Urgent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\n###########################################################\r\n## IF THERE ARE PARCELS IN THE CURRENT LOCATION OF WHICH\r\n## THE DEADLINE HAS EXCEEDED THE CONFIDENCE INTERVAL,\r\n## EMPTY AREAS UNTIL THERE IS SPACE FOR THE URGENT PARCELS\r\n###########################################################\r\n\r\nINSERT {\r\n  ?task a ex:Task , ex:UnloadTask ; ex:startTime ?now ; ex:endTime ?endTime ; ex:assignedTo ?truck .\r\n} WHERE {\r\n\r\n  ## TRUCK AND RESPECTIVE LOCATION TO WHICH NUMBER OF PACKAGES AND FREE AREAS WILL BE BOUND\r\n  ?truck a ex:Truck ; ex:located ?location .\r\n\r\n  ## COUNT NUMBER OF FREE PACKAGES IN THE AREA OF WHICH THE DEADLINE IS OUTSIDE THE CONFIDENCE INTERVAL\r\n  {SELECT (COUNT(?package) as ?numPackages) ?location WHERE {\r\n     ?truck a ex:Truck ; ex:located ?location .\r\n     ?package a ex:Package ; ex:located ?location ; st:carries [ a ex:UrgencyStigma ] .\r\n  } GROUP BY ?location}\r\n\r\n  ## COUNT NUMBER OF FREE AREAS IN THE TRUCK\r\n  {SELECT (COUNT(?area) as ?freeAreas) ?truck WHERE {\r\n    ?truck a ex:Truck ; ex:areas ?area .\r\n    ?area ex:status ex:empty .\r\n  } GROUP BY ?truck }\r\n\r\n  ## COUNT NUMBER OF FREE AREAS IN THE TRUCK\r\n  {SELECT (COUNT(?area) as ?totalAreas) ?truck WHERE {\r\n    ?truck a ex:Truck ; ex:areas ?area .\r\n\r\n    ## PREVENT TRUCK FROM UNLOADING URGENT PACKAGES\r\n    FILTER NOT EXISTS {\r\n      ?package a ex:Package ; ex:located ?area ; st:carries ex:UrgencyStigma .\r\n    }\r\n  } GROUP BY ?truck }\r\n\r\n  ## TASK BLANK NODE\r\n  {SELECT DISTINCT (UUID() as ?task) ?truck WHERE {\r\n    ?truck a ex:Truck\r\n  }}\r\n\r\n  ## ONLY ASSIGN TASK TO TRUCK IF TRUCK DOES NOT HAVE ENOUGH FREE AREAS\r\n  FILTER(?numPackages > ?freeAreas && ?freeAreas < ?totalAreas)\r\n\r\n  OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n  BIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n  BIND((?now + 0.2) as ?endTime )\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Not Urgent Unload",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\n##################################################################\r\n# UNLOAD UNTIL PARCEL IN TRUNK THAT BELONGS TO LOCATION IS UNLOADED\r\n##################################################################\r\n\r\nINSERT {\r\n\t?task a ex:Task , ex:UnloadTask ; ex:startTime ?now ; ex:endTime ?endTime ; ex:assignedTo ?truck .\r\n}\r\nWHERE {\r\n\r\n\t{SELECT (UUID() as ?task) ?truck WHERE {\r\n\t\t?truck a ex:Truck ; ex:located ?location .\r\n\t\tFILTER NOT EXISTS {\r\n\t\t\t?anyTask ex:assignedTo ?truck .\r\n\t\t}\r\n\t}}\r\n\r\n\t?truck a ex:Truck  ; ex:areas ?area ; ex:located ?location .\r\n\t?package ex:located ?area .\r\n\t?goal ex:payload ?package ; ex:destination ?location .\r\n\r\n\tOPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n\tBIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n\tBIND((?now + 0.2) as ?endTime )\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pickup",
+			"item": [
+				{
+					"name": "Pickup Urgent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\nCONSTRUCT {\r\n    ?task a ex:Task , ex:PickupTask; ex:startTime ?now; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:driveTime ?driveTime.\r\n    ?area ex:status ex:occupied.\r\n    ?package ex:located ?area.\r\n    ex:NotUrgent ex:is ?num_notUrgent .\r\n} WHERE{\r\n    { SELECT (UUID() as ?task) ?truck ?location WHERE {\r\n        ?truck a ex:Truck ; ex:located ?location .\r\n        FILTER NOT EXISTS {\r\n          ?anyTask ex:assignedTo ?truck ;\r\n        }\r\n    }}\r\n\r\n    { SELECT (COUNT(?empty) as ?numEmpty) ?truck WHERE {\r\n        ?truck a ex:Truck ; ex:areas ?empty .\r\n        ?empty a ex:Area ; ex:status ex:empty .\r\n    } GROUP BY ?truck}\r\n\r\n    { SELECT (COUNT(?package) as ?numUrgent) ?location ?truck WHERE {\r\n        ?package a ex:Package ; ex:located ?location ; st:carries [ a ex:UrgencyStigma ; ex:forTruck ?truck ] .\r\n    } GROUP BY ?location ?truck}\r\n\r\n    { SELECT (COUNT(?package) as ?nu) WHERE {\r\n        ?truck a ex:Truck ; ex:located ?location .\r\n        ?package a ex:Package ; ex:located ?location .\r\n        FILTER NOT EXISTS { ?package st:carries [ a ex:UrgencyStigma ] }\r\n    } }\r\n\r\n    BIND(IF(bound(?nu), ?nu, 0) as ?num_notUrgent)\r\n    FILTER(?num_notUrgent == 0 || ?numEmpty <= ?numUrgent)\r\n    \r\n    { SELECT ?truck ?package ?location WHERE {\r\n      ?truck a ex:Truck ; ex:located ?location .\r\n      ?package a ex:Package; ex:located ?location ; st:carries [ a ex:UrgencyStigma ; ex:forTruck ?truck ] .\r\n      ?location st:adjacentTo ?dest; ex:driveTime [ ex:destination ?dest; rdf:value  ?driveTime] .\r\n      ?g a ex:Goal; ex:payload ?package; ex:destination ?dest ; ex:deadline ?deadline.\r\n    } ORDER BY DESC(?driveTime) LIMIT 1}\r\n\r\n    ### Choose innermost area in the truck loading bay\r\n    {SELECT * WHERE {\r\n        ?truck a ex:Truck; ex:located ?location; ex:areas ?area.\r\n        ?area a ex:Area; ex:status ex:empty; ex:position ?pos.\r\n    }ORDER BY DESC(?pos) LIMIT 1}\r\n\r\n    OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n    BIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n    BIND((?now + 0.2) as ?endTime )\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/query/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"query",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pickup Non Urgent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\nDELETE {\r\n    ?area ex:status ex:empty.\r\n    ?package ex:located ?location.\r\n}\r\nINSERT {\r\n    ?task a ex:Task , ex:PickupTask; ex:startTime ?now; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:driveTime ?driveTime.\r\n    ?area ex:status ex:occupied.\r\n    ?package ex:located ?area.\r\n\r\n} WHERE{\r\n    { SELECT (UUID() as ?task) ?truck ?location WHERE {\r\n        ?truck a ex:Truck ; ex:located ?location .\r\n        FILTER NOT EXISTS {\r\n          ?anyTask ex:assignedTo ?truck ;\r\n        }\r\n    }}\r\n\r\n    { SELECT (COUNT(?empty) as ?numEmpty) ?truck WHERE {\r\n        ?truck a ex:Truck ; ex:areas ?empty .\r\n        ?empty a ex:Area ; ex:status ex:empty .\r\n    } GROUP BY ?truck}\r\n\r\n    FILTER( ?numEmpty > 0)\r\n\r\n    { SELECT ?truck ?package ?location WHERE {\r\n      ?truck a ex:Truck ; ex:located ?location .\r\n      ?package a ex:Package; ex:located ?location .\r\n      FILTER NOT EXISTS {\r\n        ?package st:carries [ a ex:UrgencyStigma ; ex:forTruck ?truck ] .\r\n      }\r\n      ?location st:adjacentTo ?dest; ex:driveTime [ ex:destination ?dest; rdf:value  ?driveTime] .\r\n      ?g a ex:Goal; ex:payload ?package; ex:destination ?dest .\r\n    } ORDER BY DESC(?driveTime) LIMIT 1}\r\n\r\n    ### Choose innermost area in the truck loading bay\r\n    {SELECT * WHERE {\r\n        ?truck a ex:Truck; ex:located ?location; ex:areas ?area.\r\n        ?area a ex:Area; ex:status ex:empty; ex:position ?pos.\r\n    }ORDER BY DESC(?pos) LIMIT 1}\r\n\r\n    OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n    BIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n    BIND((?now + 0.2) as ?endTime )\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pickup Compiled",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\n##################################################################################\r\n##\r\n## UNLESS THERE IS ENOUGH SPACE IN THE BACK TO FILL WITH NON URGENT PARCELS,\r\n## START LOADING THE TRUCK WITH URGENT PARCELS, CLOSEST DESTINATIONS LAST\r\n##\r\n###################################################################################\r\n\r\n\r\nDELETE {\r\n    ?area ex:status ex:empty.\r\n    ?package ex:located ?location.\r\n}\r\nINSERT {\r\n    ?task a ex:Task , ex:PickupTask; ex:startTime ?now; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:driveTime ?driveTime.\r\n    ?area ex:status ex:occupied.\r\n    ?package ex:located ?area.\r\n\r\n} WHERE{\r\n     { SELECT (UUID() as ?task) ?truck ?location WHERE {\r\n        ?truck a ex:Truck ; ex:located ?location .\r\n        FILTER NOT EXISTS {\r\n          ?anyTask ex:assignedTo ?truck ;\r\n        }\r\n    }}\r\n\r\n    { SELECT (COUNT(?empty) as ?numEmpty) ?truck WHERE {\r\n        ?truck a ex:Truck ; ex:areas ?empty .\r\n        ?empty a ex:Area ; ex:status ex:empty .\r\n    } GROUP BY ?truck}\r\n\r\n    { SELECT (COUNT(?package) as ?numUrgent) ?location ?truck WHERE {\r\n        ?package a ex:Package ; ex:located ?location ; st:carries [ a ex:UrgencyStigma ; ex:forTruck ?truck ] .\r\n    } GROUP BY ?location ?truck}\r\n\r\n    FILTER( ?numEmpty <= ?numUrgent)\r\n\r\n    { SELECT ?truck ?package ?location WHERE {\r\n      ?truck a ex:Truck ; ex:located ?location .\r\n      ?package a ex:Package; ex:located ?location ; st:carries [ a ex:UrgencyStigma ; ex:forTruck ?truck ] .\r\n      ?location st:adjacentTo ?dest; ex:driveTime [ ex:destination ?dest; rdf:value  ?driveTime] .\r\n      ?g a ex:Goal; ex:payload ?package; ex:destination ?dest ; ex:deadline ?deadline.\r\n    } ORDER BY DESC(?driveTime) LIMIT 1}\r\n\r\n    ### Choose innermost area in the truck loading bay\r\n    {SELECT * WHERE {\r\n        ?truck a ex:Truck; ex:located ?location; ex:areas ?area.\r\n        ?area a ex:Area; ex:status ex:empty; ex:position ?pos.\r\n    }ORDER BY DESC(?pos) LIMIT 1}\r\n\r\n    BIND(NOW() as ?now)\r\n    BIND (?now + \"PT0.2S\"^^xsd:duration as ?endTime)\r\n};\r\n\r\n##################################################################################\r\n##\r\n## IF IT WAS DETERMINED THAT THERE IS STILL SPACE IN THE BACK TO FILL UP WITH NON\r\n## URGENT PARCELS, DO SO NOW\r\n##\r\n###################################################################################\r\n\r\nDELETE {\r\n    ?area ex:status ex:empty.\r\n    ?package ex:located ?location.\r\n}\r\nINSERT {\r\n    ?task a ex:Task , ex:PickupTask; ex:startTime ?now; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:driveTime ?driveTime.\r\n    ?area ex:status ex:occupied.\r\n    ?package ex:located ?area.\r\n\r\n} WHERE{\r\n    { SELECT (UUID() as ?task) ?truck ?location WHERE {\r\n        ?truck a ex:Truck ; ex:located ?location .\r\n        FILTER NOT EXISTS {\r\n          ?anyTask ex:assignedTo ?truck ;\r\n        }\r\n    }}\r\n\r\n    { SELECT (COUNT(?empty) as ?numEmpty) ?truck WHERE {\r\n        ?truck a ex:Truck ; ex:areas ?empty .\r\n        ?empty a ex:Area ; ex:status ex:empty .\r\n    } GROUP BY ?truck}\r\n\r\n    FILTER( ?numEmpty > 0)\r\n\r\n    { SELECT ?truck ?package ?location WHERE {\r\n      ?truck a ex:Truck ; ex:located ?location .\r\n      ?package a ex:Package; ex:located ?location .\r\n      FILTER NOT EXISTS {\r\n        ?package st:carries [ a ex:UrgencyStigma ; ex:forTruck ?truck ] .\r\n      }\r\n      ?location st:adjacentTo ?dest; ex:driveTime [ ex:destination ?dest; rdf:value  ?driveTime] .\r\n      ?g a ex:Goal; ex:payload ?package; ex:destination ?dest .\r\n    } ORDER BY DESC(?driveTime) LIMIT 1}\r\n\r\n    ### Choose innermost area in the truck loading bay\r\n    {SELECT * WHERE {\r\n        ?truck a ex:Truck; ex:located ?location; ex:areas ?area.\r\n        ?area a ex:Area; ex:status ex:empty; ex:position ?pos.\r\n    }ORDER BY DESC(?pos) LIMIT 1}\r\n\r\n    BIND(NOW() as ?now)\r\n    BIND (?now + \"PT0.2S\"^^xsd:duration as ?endTime)\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Disturbances",
+			"item": [
+				{
+					"name": "[ Problem 3 ] Add Packages with Deadline",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\nDELETE {\r\n  ex:Disturbance ex:happens ?when .\r\n\r\n  ## shift remaining deadlines by introduced disturbance\r\n  ?existingGoal ex:deadline ?existingDeadline .\r\n}\r\nINSERT {\r\n  ex:distPackage_1 a ex:Package ; ex:located ex:l3 .\r\n  ex:distPackage_2 a ex:Package ; ex:located ex:l3 .\r\n\r\n  ex:distGoal_1 a ex:Goal ; ex:payload ex:distPackage_1 ; ex:destination ex:l2 ; ex:deadline ?deadline .\r\n  ex:distGoal_2 a ex:Goal ; ex:payload ex:distPackage_2 ; ex:destination ex:l1 ; ex:deadline ?deadline .\r\n\r\n  ?existingGoal ex:deadline ?newDeadline .\r\n}\r\nWHERE {\r\n    ex:Disturbance ex:happens ?when .\r\n    ex:Clock rdf:value ?clocktime .\r\n    FILTER(?clocktime >= ?when)\r\n\r\n    ex:l2 a ex:Location ; ex:driveTime [ ex:destination ex:l1 ; rdf:value ?l1_l2 ].\r\n    ex:l2 a ex:Location ; ex:driveTime [ ex:destination ex:l3; rdf:value ?l2_l3 ].\r\n\r\n    ?existingGoal a ex:Goal ; ex:deadline ?existingDeadline .\r\n    {SELECT DISTINCT ?existingGoal ?newDeadline WHERE {\r\n      ex:l2 a ex:Location ; ex:driveTime [ ex:destination ex:l1 ; rdf:value ?l1_l2 ].\r\n      ex:l2 a ex:Location ; ex:driveTime [ ex:destination ex:l3; rdf:value ?l2_l3 ].\r\n      ?existingGoal a ex:Goal ; ex:deadline ?existingDeadline .\r\n      BIND(?existingDeadline + ((?l1_l2 * 1.2 + ?l2_l3) * 1.2) as ?newDeadline).\r\n    }}\r\n\r\n    BIND(?clocktime + ((?l1_l2 * 1.2 + ?l2_l3) * 1.2) as ?deadline)\r\n }"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[ Problem 4 ] Add Packages with Deadline Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\nDELETE {\r\n  ex:Disturbance ex:happens ?when .\r\n  \r\n  ## shift remaining deadlines by introduced disturbance\r\n  ?existingGoal ex:deadline ?existingDeadline .\r\n}\r\nINSERT {\r\n  ex:distPackage_1 a ex:Package ; ex:located ex:l1 .\r\n  ex:distPackage_2 a ex:Package ; ex:located ex:l1 .\r\n\r\n  ex:distGoal_1 a ex:Goal ; ex:payload ex:distPackage_1 ; ex:destination ex:l2 ; ex:deadline ?deadline .\r\n  ex:distGoal_2 a ex:Goal ; ex:payload ex:distPackage_2 ; ex:destination ex:l3 ; ex:deadline ?deadline .\r\n  \r\n  ?existingGoal ex:deadline ?newDeadline .\r\n}\r\nWHERE {\r\n    ex:Disturbance ex:happens ?when .\r\n    ex:Clock rdf:value ?clocktime .\r\n    FILTER(?clocktime >= ?when)\r\n\r\n    ex:l2 a ex:Location ; ex:driveTime [ ex:destination ex:l1 ; rdf:value ?l1_l2 ].\r\n    ex:l2 a ex:Location ; ex:driveTime [ ex:destination ex:l3; rdf:value ?l2_l3 ].\r\n\r\n    ?existingGoal a ex:Goal ; ex:deadline ?existingDeadline .\r\n    {SELECT DISTINCT ?existingGoal ?newDeadline WHERE {\r\n      ex:l2 a ex:Location ; ex:driveTime [ ex:destination ex:l1 ; rdf:value ?l1_l2 ].\r\n      ex:l2 a ex:Location ; ex:driveTime [ ex:destination ex:l3; rdf:value ?l2_l3 ].\r\n      ?existingGoal a ex:Goal ; ex:deadline ?existingDeadline .\r\n      BIND(?existingDeadline + ((?l1_l2 * 2 + ?l2_l3) * 1.2) as ?newDeadline).\r\n    }}\r\n\r\n    BIND(?clocktime + ((?l1_l2 * 2  + ?l2_l3) * 1.2) as ?deadline)\r\n }\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[ Problem 5 ] Add Packages with Deadline Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\n\r\n#########################################################################\r\n## Add new deadlined packages after the first deadline, prob. package 2\r\n## at timestamp ~500 . Truck should be at L1\r\n#########################################################################\r\nDELETE {\r\n  ex:Disturbance ex:happens ?when .\r\n\r\n  ## shift remaining deadlines by introduced disturbance\r\n  ?existingGoal ex:deadline ?existingDeadline .\r\n}\r\nINSERT {\r\n  ex:distPackage_1 a ex:Package ; ex:located ex:l2 .\r\n  ex:distPackage_2 a ex:Package ; ex:located ex:l2 .\r\n\r\n  ex:distGoal_1 a ex:Goal ; ex:payload ex:distPackage_1 ; ex:destination ex:l1 ; ex:deadline ?deadline .\r\n  ex:distGoal_2 a ex:Goal ; ex:payload ex:distPackage_2 ; ex:destination ex:l3 ; ex:deadline ?deadline .\r\n\r\n  ?existingGoal ex:deadline ?newDeadline .\r\n}\r\nWHERE {\r\n    ex:Disturbance ex:happens ?when .\r\n    ex:Clock rdf:value ?clocktime .\r\n    FILTER(?clocktime >= ?when)\r\n\r\n    ex:l2 a ex:Location ; ex:driveTime [ ex:destination ex:l1 ; rdf:value ?l1_l2 ].\r\n    ex:l2 a ex:Location ; ex:driveTime [ ex:destination ex:l3; rdf:value ?l2_l3 ].\r\n\r\n    ?existingGoal a ex:Goal ; ex:deadline ?existingDeadline .\r\n    {SELECT DISTINCT ?existingGoal ?newDeadline WHERE {\r\n      ex:l2 a ex:Location ; ex:driveTime [ ex:destination ex:l1 ; rdf:value ?l1_l2 ].\r\n      ex:l2 a ex:Location ; ex:driveTime [ ex:destination ex:l3; rdf:value ?l2_l3 ].\r\n      ?existingGoal a ex:Goal ; ex:deadline ?existingDeadline .\r\n      BIND(?existingDeadline + ((?l1_l2 * 2 + ?l2_l3) * 1.2) as ?newDeadline).\r\n    }}\r\n\r\n    BIND(?clocktime + ((?l1_l2 * 2 + ?l2_l3) * 1.2) as ?deadline)\r\n }"
+						},
+						"url": {
+							"raw": "http://localhost:8080/sparql/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sparql",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Compiled Execution",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "prefix ex: <http://example.org/>\r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#>\r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nprefix st: <http://dfki.de/stigld#>\r\nprefix stigFN: <http://www.dfki.de/func#>\r\nprefix : <http://dfki.de/stigld/trucksexample#>\r\n\r\n#########################################################\r\n##\r\n##  COMPLETE MOVE TASK\r\n##\r\n########################################################\r\n\r\nDELETE {\r\n  :NUM_STEPS rdf:value ?oldSteps .\r\n  ?moveTask a ex:Task , ex:MoveTask ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:destination ?destination .\r\n  ?truck ex:located ?origin .\r\n  ex:Clock rdf:value ?clocktime .\r\n}\r\nINSERT {\r\n  :NUM_STEPS rdf:value ?newSteps .\r\n  ?truck ex:located ?destination .\r\n  ex:Clock rdf:value ?endTime.\r\n}\r\nWHERE {\r\n  :NUM_STEPS rdf:value ?oldSteps .\r\n  BIND(?oldSteps + 1 as ?newSteps) \r\n  ?truck a ex:Truck ; ex:located ?origin .\r\n  ?moveTask a ex:Task , ex:MoveTask ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:destination ?destination .\r\n  OPTIONAL {  ex:Clock rdf:value ?clocktime . }\r\n  FILTER NOT EXISTS {\r\n    ?otherTask a ex:Task ; ex:endTime ?earlier .\r\n    FILTER (?earlier < ?endTime)\r\n  }\r\n};\r\n\r\n#########################################################\r\n##\r\n##  COMPLETE PICKUP TASK\r\n##\r\n########################################################\r\n\r\nDELETE {\r\n  :NUM_STEPS rdf:value ?oldSteps .\r\n  ?task a ex:Task , ex:PickupTask ; ex:assignedTo ?truck ; ex:startTime ?startTime ; ex:endTime ?endTime .\r\n  ex:Clock rdf:value ?clocktime .\r\n}\r\nINSERT {\r\n  :NUM_STEPS rdf:value ?newSteps .\r\n  ex:Clock rdf:value ?endTime.\r\n}\r\nWHERE {\r\n  :NUM_STEPS rdf:value ?oldSteps .\r\n  BIND(?oldSteps + 1 as ?newSteps) \r\n  ?task a ex:Task , ex:PickupTask ; ex:assignedTo ?truck ;  ex:startTime ?startTime ; ex:endTime ?endTime .\r\n  OPTIONAL {  ex:Clock rdf:value ?clocktime . }\r\n  FILTER NOT EXISTS {\r\n\t\t?otherTask a ex:Task ; ex:endTime ?earlier .\r\n\t\tFILTER (?earlier < ?endTime)\r\n\t}\r\n};\r\n\r\n#########################################################\r\n##\r\n##  COMPLETE DELIVER TASK\r\n##\r\n########################################################\r\n\r\nDELETE {\r\n  :NUM_STEPS rdf:value ?oldSteps .\r\n  ?task a ex:Task , ex:DeliverTask ; ex:assignedTo ?truck ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:package ?package.\r\n  ?package a ex:Package ; ex:located ?location .\r\n  ?package st:carries ?stigma .\r\n  ?stigma  a st:Stigma , ex:UrgencyStigma ; st:concentration ?conc .\r\n  ex:Clock rdf:value ?clocktime .\r\n}\r\nINSERT{\r\n  :NUM_STEPS rdf:value ?newSteps .\r\n  ?deliveryNotice a ex:DeliveryNotice ; ex:package ?package ; ex:deliveredTo ?location ; ex:deadline ?deadline ; ex:timePassed ?timePassed ; ex:timeLeft ?timeLeft .\r\n  ex:Clock rdf:value ?endTime.\r\n}\r\nWHERE {\r\n   :NUM_STEPS rdf:value ?oldSteps .\r\n   BIND(?oldSteps + 1 as ?newSteps) \r\n\r\n  {SELECT (UUID() as ?deliveryNotice) ?task WHERE {\r\n      ?task a ex:Task , ex:DeliverTask .\r\n  }}\r\n  ?task a ex:Task , ex:DeliverTask ; ex:assignedTo ?truck ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:package ?package.\r\n  ?package a ex:Package ; ex:located ?location .\r\n  OPTIONAL {  ex:Clock rdf:value ?clocktime . }\r\n  BIND(IF(bound(?clocktime), ?clocktime, 0) as ?timePassed)\r\n  OPTIONAL {\r\n      ex:Clock rdf:value ?clocktime .\r\n      BIND(IF(bound(?clocktime), ?clocktime, 0) as ?timePassed)\r\n      ?goal a ex:Goal ; ex:payload ?package ; ex:deadline ?deadline .\r\n      BIND((?deadline - ?timePassed) as ?timeLeft ) .\r\n  }\r\n  OPTIONAL {\r\n      ?package st:carries ?stigma .\r\n      ?stigma  a st:Stigma , ex:UrgencyStigma ; st:concentration ?conc .\r\n      FILTER (isBlank(?stigma))\r\n  }\r\n  FILTER NOT EXISTS {\r\n    ?otherTask a ex:Task ; ex:endTime ?earlier .\r\n    FILTER (?earlier < ?endTime)\r\n  }\r\n};\r\n\r\n#########################################################\r\n##\r\n##  COMPLETE UNLOAD TASK\r\n##\r\n########################################################\r\nDELETE {\r\n    :NUM_STEPS rdf:value ?oldSteps .\r\n\t?finishedTask a  ex:Task , ex:UnloadTask ; ex:startTime ?started ; ex:endTime ?ended ; ex:assignedTo ?truck .\r\n    ?area ex:status ex:occupied .\r\n\t?package ex:located ?area .\r\n\tex:Clock rdf:value ?clocktime .\r\n}\r\nINSERT {\r\n    :NUM_STEPS rdf:value ?newSteps .\r\n\t?package ex:located ?location .\r\n  ?area ex:status ex:empty .\r\n\t?deliverTask a ex:Task,  ex:DeliverTask ; ex:startTime ?ended ; ex:endTime ?endDeliver ; ex:assignedTo ?truck ; ex:package ?package .\r\n\tex:Clock rdf:value ?ended.\r\n}\r\nWHERE {\r\n    :NUM_STEPS rdf:value ?oldSteps .\r\n    BIND(?oldSteps + 1 as ?newSteps) \r\n\r\n\t?finishedTask a ex:Task,  ex:UnloadTask ; ex:startTime ?started ; ex:endTime ?ended ; ex:assignedTo ?truck .\r\n\r\n\t?truck a ex:Truck ; ex:located ?location .\r\n    ?area ex:status ex:occupied .\r\n  OPTIONAL {  ex:Clock rdf:value ?clocktime . }\r\n\t{SELECT ?truck ?area ?package WHERE {\r\n\t\t?truck a ex:Truck ; ex:located ?location ; ex:areas ?area .\r\n\t\t?area a ex:Area ; ex:position ?position .\r\n\t\t?package ex:located ?area .\r\n\t\tFILTER NOT EXISTS {\r\n\t\t\t?truck ex:areas ?otherArea .\r\n\t\t\t?otherArea a ex:Area ; ex:position ?closerPosition .\r\n\t\t\t?otherPackage ex:located ?otherArea .\r\n\t\t\tFILTER (?closerPosition < ?position )\r\n\t\t}\r\n\t}}\r\n\r\n\tOPTIONAL {SELECT DISTINCT (UUID() as ?deliverTask) ?package ?truck ?location WHERE {\r\n\t  ?truck ex:located ?location ; ex:areas ?area  .\r\n\t\t?package ex:located ?area .\r\n\t\t?goal a ex:Goal  ; ex:payload ?package ; ex:destination ?location .\r\n\t}}\r\n\r\n\tFILTER NOT EXISTS {\r\n\t\t?otherTask a ex:Task ; ex:endTime ?earlier .\r\n\t\tFILTER (?earlier < ?ended)\r\n\t}\r\n\tBIND((?ended + 1) as ?endDeliver )\r\n};\r\n##################################################################\r\n# UNLOAD UNTIL PARCEL IN TRUNK THAT BELONGS TO LOCATION IS UNLOADED\r\n##################################################################\r\n\r\nINSERT {\r\n\t?task a ex:Task , ex:UnloadTask ; ex:startTime ?now ; ex:endTime ?endTime ; ex:assignedTo ?truck .\r\n}\r\nWHERE {\r\n\r\n\t{SELECT (UUID() as ?task) ?truck WHERE {\r\n\t\t?truck a ex:Truck ; ex:located ?location .\r\n\t\tFILTER NOT EXISTS {\r\n\t\t\t?anyTask ex:assignedTo ?truck .\r\n\t\t}\r\n\t}}\r\n\r\n\t?truck a ex:Truck  ; ex:areas ?area ; ex:located ?location .\r\n\t?package ex:located ?area .\r\n\t?goal ex:payload ?package ; ex:destination ?location .\r\n\r\n\tOPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n\tBIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n\tBIND((?now + 1) as ?endTime )\r\n};\r\n\r\n\r\n###########################################################\r\n## IF THERE ARE PARCELS IN THE CURRENT LOCATION OF WHICH\r\n## THE DEADLINE HAS EXCEEDED THE CONFIDENCE INTERVAL,\r\n## EMPTY AREAS UNTIL THERE IS SPACE FOR THE URGENT PARCELS\r\n###########################################################\r\n\r\nINSERT {\r\n  ?task a ex:Task , ex:UnloadTask ; ex:startTime ?now ; ex:endTime ?endTime ; ex:assignedTo ?truck .\r\n} WHERE {\r\n\r\n  ## TRUCK AND RESPECTIVE LOCATION TO WHICH NUMBER OF PACKAGES AND FREE AREAS WILL BE BOUND\r\n  ?truck a ex:Truck ; ex:located ?location .\r\n\r\n  ## COUNT NUMBER OF FREE PACKAGES IN THE AREA OF WHICH THE DEADLINE IS OUTSIDE THE CONFIDENCE INTERVAL\r\n  {SELECT (COUNT(?package) as ?numPackages) ?location WHERE {\r\n     ?truck a ex:Truck ; ex:located ?location .\r\n     ?package a ex:Package ; ex:located ?location ; st:carries [ a ex:UrgencyStigma ] .\r\n  } GROUP BY ?location}\r\n\r\n  ## COUNT NUMBER OF FREE AREAS IN THE TRUCK\r\n  {SELECT (COUNT(?area) as ?freeAreas) ?truck WHERE {\r\n    ?truck a ex:Truck ; ex:areas ?area .\r\n    ?area ex:status ex:empty .\r\n  } GROUP BY ?truck }\r\n\r\n  ## COUNT NUMBER OF FREE AREAS IN THE TRUCK\r\n  {SELECT (COUNT(?area) as ?totalAreas) ?truck WHERE {\r\n    ?truck a ex:Truck ; ex:areas ?area .\r\n\r\n    ## PREVENT TRUCK FROM UNLOADING URGENT PACKAGES\r\n    FILTER NOT EXISTS {\r\n      ?package a ex:Package ; ex:located ?area ; st:carries ex:UrgencyStigma .\r\n    }\r\n  } GROUP BY ?truck }\r\n\r\n  ## TASK BLANK NODE\r\n  {SELECT DISTINCT (UUID() as ?task) ?truck WHERE {\r\n    ?truck a ex:Truck\r\n  }}\r\n\r\n  ## ONLY ASSIGN TASK TO TRUCK IF TRUCK DOES NOT HAVE ENOUGH FREE AREAS\r\n  FILTER(?numPackages > ?freeAreas && ?freeAreas < ?totalAreas)\r\n\r\n  OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n  BIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n  BIND((?now + 1) as ?endTime )\r\n};\r\n##################################################################################\r\n##\r\n## UNLESS THERE IS ENOUGH SPACE IN THE BACK TO FILL WITH NON URGENT PARCELS,\r\n## START LOADING THE TRUCK WITH URGENT PARCELS, CLOSEST DESTINATIONS LAST\r\n##\r\n###################################################################################\r\n\r\n\r\nDELETE {\r\n    ?area ex:status ex:empty.\r\n    ?package ex:located ?location.\r\n}\r\nINSERT {\r\n    ?task a ex:Task , ex:PickupTask; ex:startTime ?now; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:driveTime ?driveTime.\r\n    ?area ex:status ex:occupied.\r\n    ?package ex:located ?area.\r\n\r\n} WHERE{\r\n    { SELECT (UUID() as ?task) ?truck ?location WHERE {\r\n        ?truck a ex:Truck ; ex:located ?location .\r\n        FILTER NOT EXISTS {\r\n          ?anyTask ex:assignedTo ?truck ;\r\n        }\r\n    }}\r\n\r\n    { SELECT (COUNT(?empty) as ?numEmpty) ?truck WHERE {\r\n        ?truck a ex:Truck ; ex:areas ?empty .\r\n        ?empty a ex:Area ; ex:status ex:empty .\r\n    } GROUP BY ?truck}\r\n\r\n    { SELECT (COUNT(?package) as ?numUrgent) ?location ?truck WHERE {\r\n        ?package a ex:Package ; ex:located ?location ; st:carries [ a ex:UrgencyStigma ; ex:forTruck ?truck ] .\r\n    } GROUP BY ?location ?truck}\r\n\r\n    { SELECT (COUNT(?package) as ?nu) WHERE {\r\n        ?truck a ex:Truck ; ex:located ?location .\r\n        ?package a ex:Package ; ex:located ?location .\r\n        FILTER NOT EXISTS { ?package st:carries [ a ex:UrgencyStigma ] }\r\n    } }\r\n\r\n    BIND(IF(bound(?nu), ?nu, 0) as ?num_notUrgent)\r\n    FILTER(?num_notUrgent = 0 || ?numEmpty <= ?numUrgent)\r\n\r\n    { SELECT ?truck ?package ?location WHERE {\r\n      ?truck a ex:Truck ; ex:located ?location .\r\n      ?package a ex:Package; ex:located ?location ; st:carries [ a ex:UrgencyStigma ; ex:forTruck ?truck ] .\r\n      ?location st:adjacentTo ?dest; ex:driveTime [ ex:destination ?dest; rdf:value  ?driveTime] .\r\n      ?g a ex:Goal; ex:payload ?package; ex:destination ?dest ; ex:deadline ?deadline.\r\n    } ORDER BY DESC(?driveTime) LIMIT 1}\r\n\r\n    ### Choose innermost area in the truck loading bay\r\n    {SELECT * WHERE {\r\n        ?truck a ex:Truck; ex:located ?location; ex:areas ?area.\r\n        ?area a ex:Area; ex:status ex:empty; ex:position ?pos.\r\n    }ORDER BY DESC(?pos) LIMIT 1}\r\n\r\n    OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n    BIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n    BIND((?now + 1) as ?endTime )\r\n};\r\n\r\n##################################################################################\r\n##\r\n## IF IT WAS DETERMINED THAT THERE IS STILL SPACE IN THE BACK TO FILL UP WITH NON\r\n## URGENT PARCELS, DO SO NOW\r\n##\r\n###################################################################################\r\n\r\nDELETE {\r\n    ?area ex:status ex:empty.\r\n    ?package ex:located ?location.\r\n}\r\nINSERT {\r\n    ?task a ex:Task , ex:PickupTask; ex:startTime ?now; ex:endTime ?endTime ; ex:assignedTo ?truck ; ex:driveTime ?driveTime.\r\n    ?area ex:status ex:occupied.\r\n    ?package ex:located ?area.\r\n\r\n} WHERE{\r\n    { SELECT (UUID() as ?task) ?truck ?location WHERE {\r\n        ?truck a ex:Truck ; ex:located ?location .\r\n        FILTER NOT EXISTS {\r\n          ?anyTask ex:assignedTo ?truck ;\r\n        }\r\n    }}\r\n\r\n    { SELECT (COUNT(?empty) as ?numEmpty) ?truck WHERE {\r\n        ?truck a ex:Truck ; ex:areas ?empty .\r\n        ?empty a ex:Area ; ex:status ex:empty .\r\n    } GROUP BY ?truck}\r\n\r\n    FILTER( ?numEmpty > 0)\r\n\r\n    { SELECT ?truck ?package ?location WHERE {\r\n      ?truck a ex:Truck ; ex:located ?location .\r\n      ?package a ex:Package; ex:located ?location .\r\n      FILTER NOT EXISTS {\r\n        ?package st:carries [ a ex:UrgencyStigma ; ex:forTruck ?truck ] .\r\n      }\r\n      ?location st:adjacentTo ?dest; ex:driveTime [ ex:destination ?dest; rdf:value  ?driveTime] .\r\n      ?g a ex:Goal; ex:payload ?package; ex:destination ?dest .\r\n    } ORDER BY DESC(?driveTime) LIMIT 1}\r\n\r\n    ### Choose innermost area in the truck loading bay\r\n    {SELECT * WHERE {\r\n        ?truck a ex:Truck; ex:located ?location; ex:areas ?area.\r\n        ?area a ex:Area; ex:status ex:empty; ex:position ?pos.\r\n    }ORDER BY DESC(?pos) LIMIT 1}\r\n\r\n    OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n    BIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n    BIND((?now + 1) as ?endTime )\r\n};\r\n\r\n###########################################################\r\n##\r\n## MOVE TO NEXT LOCATION WHERE PACKAGE NEEDS TO BE UNLOADED URGENTLY\r\n##\r\n###########################################################\r\nINSERT {\r\n\t?task a ex:Task , ex:MoveTask ; ex:assignedTo ?truck ; ex:destination ?destination ; ex:startTime ?now ; ex:endTime ?endTime .\r\n}\r\nWHERE {\r\n\r\n  ## CREATE UNIQUE TASK NODE PER TRUCK THAT FULFILLS QUERY AND HAS NOT YET A TASK ASSIGNED\r\n  { SELECT DISTINCT (UUID() as ?task) ?truck WHERE {\r\n      ?truck a ex:Truck .\r\n      FILTER NOT EXISTS {\r\n        ?t a ex:Task ; ex:assignedTo ?truck .\r\n      }\r\n  }}\r\n\r\n  ## DETERMINE DESTINATION BY URGENT PARCEL WITH MOST INTENSE MARKER\r\n  { SELECT ?truck ?destination WHERE {\r\n\t\t\t?truck a ex:Truck ; ex:areas ?area ; ex:located ?location .\r\n\t\t\t?package a ex:Package ; ex:located ?area ; st:carries [a ex:UrgencyStigma ; st:concentration ?conc ] .\r\n            ?goal a ex:Goal ; ex:payload ?package ; ex:destination ?destination .\r\n\t} ORDER BY DESC(?conc) LIMIT 1}\r\n\r\n  ?truck a ex:Truck ; ex:located ?location .\r\n  ?location ex:driveTime [ex:destination ?destination ; rdf:value ?driveTime ] .\r\n\r\n  OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n\tBIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n\tBIND((?now + ?driveTime) as ?endTime )\r\n};\r\n\r\n\r\n###########################################################\r\n##\r\n## MOVE TO NEXT LOCATION WHERE PACKAGE NEEDS TO BE PICKED UP URGENTLY\r\n##\r\n###########################################################\r\nINSERT {\r\n\t?task a ex:Task , ex:MoveTask ; ex:assignedTo ?truck ; ex:destination ?destination ; ex:startTime ?now ; ex:endTime ?endTime .\r\n}\r\nWHERE {\r\n  {SELECT DISTINCT ?truck (UUID() as ?task) WHERE {\r\n    ?truck a ex:Truck .\r\n    FILTER NOT EXISTS {\r\n      ?anyTask ex:assignedTo ?truck .\r\n    }\r\n\t\tFILTER NOT EXISTS {\r\n\t\t\t?truck ex:located ?location .\r\n\t\t\t?package a ex:Package ; ex:located ?location ; ex:carries [ a st:UrgencyStigma ; ex:forTruck ?truck ] .\r\n\t\t}\r\n    FILTER EXISTS {\r\n      ?truck ex:areas [ex:status ex:empty] .\r\n    }\r\n  }}\r\n\r\n  {SELECT ?destination ?truck ?driveTime WHERE {\r\n    ?truck a ex:Truck ; ex:located ?location .\r\n    ?package a ex:Package ; ex:located ?destination ; st:carries [a ex:UrgencyStigma; ex:forTruck ?truck ; st:concentration ?conc ] .\r\n    ?destination a ex:Location ; ex:driveTime [ ex:destination ?location ; rdf:value ?driveTime ] .\r\n    FILTER( ?destination != ?location)\r\n  } ORDER BY DESC(?conc) LIMIT 1}\r\n\r\n  OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n\tBIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n\tBIND((?now + ?driveTime) as ?endTime )\r\n};\r\n\r\n###########################################################\r\n##\r\n## MOVE TO NEXT LOCATION WHERE PACKAGE IN BACK OF TRUCK NEEDS TO GO\r\n##\r\n###########################################################\r\n\r\nINSERT {\r\n\t?task a ex:Task , ex:MoveTask ; ex:assignedTo ?truck ; ex:destination ?destination ; ex:startTime ?now ; ex:endTime ?endTime .\r\n}\r\nWHERE {\r\n\r\n\t{SELECT DISTINCT ?truck (UUID() as ?task) WHERE {\r\n\t\t?truck a ex:Truck .\r\n\t}}\r\n\r\n\t?truck a ex:Truck ; ex:areas ?closestLoaded ; ex:located [\r\n\t\t\ta ex:Location ; st:adjacentTo ?destination ; ex:driveTime [\r\n\t\t\t\tex:destination ?destination ;\r\n\t\t\t\trdf:value ?driveTime\r\n\t\t\t]\r\n\t\t] .\r\n\r\n\tFILTER NOT EXISTS {\r\n\t\t?anyTask a ex:Task ; ex:assignedTo ?truck .\r\n        \r\n\t}\r\n    FILTER EXISTS{\r\n        ?truck ex:areas [ ex:status ex:occupied] .\r\n    }\r\n\r\n\t?package a ex:Package ; ex:located ?closestLoaded .\r\n\t?closestLoaded ex:position ?closestPosition .\r\n\r\n\t?goal a ex:Goal ; ex:payload ?package ; ex:destination ?destination .\r\n\tFILTER NOT EXISTS {\r\n\t\t?truck ex:areas ?closerArea .\r\n\t\t?closerPackage a ex:Package ; ex:located ?closerArea .\r\n\t\t?closerArea ex:position ?closerPosition .\r\n\t\tFILTER (?closerPosition < ?closestPosition)\r\n\t}\r\n\r\n  OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n\tBIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n\tBIND((?now + ?driveTime) as ?endTime )\r\n};\r\n###########################################################\r\n##\r\n## MOVE TO LOCATION WITH LARGEST PILE OF PACKAGES\r\n##\r\n###########################################################\r\n\r\nINSERT {\r\n\t?task a ex:Task , ex:MoveTask ; ex:assignedTo ?truck ; ex:destination ?destination ; ex:startTime ?now ; ex:endTime ?endTime .\r\n}\r\nWHERE {\r\n\r\n  { SELECT DISTINCT (UUID() as ?task) ?truck WHERE {\r\n      ?truck a ex:Truck .\r\n      FILTER NOT EXISTS {\r\n        ?t a ex:Task ; ex:assignedTo ?truck .\r\n      }\r\n  }}\r\n\r\n  {SELECT ?truck ?destination WHERE {\r\n\t  ?truck a ex:Truck ; ex:located ?origin .\r\n\t  ?destination a ex:Location .\r\n\t\t{ SELECT (COUNT(?package) as ?parcelsAtDestination) ?destination WHERE {\r\n\t\t\t\t?package a ex:Package ; ex:located ?destination .\r\n\t\t} GROUP BY ?destination }\r\n\t\tFILTER(?origin != ?destination)\r\n\t}  ORDER BY DESC(?parcelsAtDestination) LIMIT 1}\r\n\r\n  ?truck ex:located [ ex:driveTime [ex:destination ?destination ; rdf:value ?driveTime ] ] .\r\n\r\n\r\n  OPTIONAL { ex:Clock rdf:value ?clocktime\t}\r\n\tBIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)\r\n\tBIND((?now + ?driveTime) as ?endTime )\r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/sparql/update/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sparql",
+						"update",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addstartTime",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "prefix ex: <http://example.org/> \r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#> \r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \r\nprefix st: <http://dfki.de/stigld#> \r\nprefix stigFN: <http://www.dfki.de/func#>\r\nINSERT{\r\n  ex:start a ex:startTime; rdf:value ?startTime\r\n}\r\nWHERE{\r\n  OPTIONAL{?t a ex:startTime; rdf:value ?val.}\r\n  BIND(IF((bound(?val)), ?val, NOW()) as ?startTime)\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/sparql/update/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sparql",
+						"update",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FindEarliestDeadline",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "prefix ex: <http://example.org/> \r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#> \r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \r\nprefix st: <http://dfki.de/stigld#> \r\nprefix stigFN: <http://www.dfki.de/func#>\r\nSELECT * WHERE{\r\n\t?t a ex:Truck; ex:located ?loc.\r\n    ?p a ex:Package.\r\n  \t?g a ex:Goal; ex:payload ?p; ex:destination ?dest.\r\n    \r\n  OPTIONAL{?g ex:deadline ?deadline.\r\n  ?st a ex:startTime; rdf:value ?start.\r\n  BIND(stigFN:duration_secs(?start, NOW()) as ?diff)\r\n  BIND((?deadline-?diff) as ?diff2)}\r\n  \r\n}ORDER BY ASC(?diff2)\r\nLIMIT 1\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/sparql/query/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sparql",
+						"query",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DESCRIBE",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "prefix ex: <http://example.org/> \r\nprefix xsd: <http://www.w3.org/2001/XMLSchema#> \r\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \r\nprefix st: <http://dfki.de/stigld#> \r\nprefix stigFN: <http://www.dfki.de/func#>\r\nprefix : <http://dfki.de/stigld/trucksexample#>\r\n\r\nDESCRIBE * WHERE{\r\n    OPTIONAL {}\r\n    OPTIONAL {?task a ex:Task .}\r\n#    OPTIONAL {ex:Clock rdf:Value ?clocktime .}\r\n    OPTIONAL {?notice a ex:DeliveryNotice} \r\n   ?truck a ex:Truck ; ex:areas ?area .    \r\n    OPTIONAL { ?package a ex:Package .}    \r\n#    OPTIONAL { ?goal a ex:Goal .}    \r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/sparql/query/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sparql",
+						"query",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

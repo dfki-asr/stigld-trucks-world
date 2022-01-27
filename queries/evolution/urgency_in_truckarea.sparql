@@ -1,0 +1,42 @@
+prefix ex: <http://example.org/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix st: <http://dfki.de/stigld#>
+prefix stigFN: <http://www.dfki.de/func#>
+
+### DELETE OLD URGENCY STIGMATA
+DELETE {
+  ?package st:carries ?urgency .
+  ?stigma a st:Stigma , ex:UrgencyStigma ; st:concentration ?value ; ex:forTruck ?truck .
+}
+WHERE {
+  ?package st:carries ?urgency .
+  ?stigma a st:Stigma , ex:UrgencyStigma ; st:concentration ?value ; ex:forTruck ?truck .
+  FILTER(isBlank(?stigma))
+} ;
+
+### RECALCULATE BASED ON CURRENT TIME
+INSERT {
+  ?package st:carries ?urgency .
+  ?urgency a st:Stigma , ex:UrgencyStigma ; st:concentration ?value ; ex:forTruck ?truck .
+} WHERE {
+  {SELECT DISTINCT (BNODE() as ?urgency) ?truck ?package WHERE {
+       ?truck a ex:Truck .
+       ?package a ex:Package .
+   }}
+
+   ex:confidence a ex:confidenceFactor ; rdf:value ?confidence .
+   ?truck a ex:Truck ; ex:areas ?area ; ex:located ?location .
+   ?package a ex:Package ; ex:located ?area .
+   ?location ex:driveTime [ ex:destination ?destination ; rdf:value ?driveTime ] .
+   ?goal a ex:Goal ; ex:payload ?package ; ex:destination ?destination ; ex:deadline ?deadline .
+
+   OPTIONAL { ex:Clock rdf:value ?clocktime	}
+   BIND(IF(bound(?clocktime), ?clocktime, 0) as ?timePassed)
+   BIND((?deadline-?timePassed) as ?timeRemaining)
+   BIND(?confidence * ?driveTime as ?estimateRequired)
+   BIND(IF(?timeRemaining - ?driveTime > 0 , ?timeRemaining - ?driveTime , 0) as ?estimateLeft)
+   BIND((1.0/(1.0 + ?estimateLeft)) as ?value)
+   FILTER(?timeRemaining < ?estimateRequired)
+   FILTER(?location != ?destination)
+}

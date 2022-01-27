@@ -1,0 +1,41 @@
+prefix ex: <http://example.org/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix st: <http://dfki.de/stigld#>
+prefix stigFN: <http://www.dfki.de/func#>
+
+DELETE {
+  ?task a ex:Task , ex:DeliverTask ; ex:assignedTo ?truck ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:package ?package.
+  ?package a ex:Package ; ex:located ?location .
+  ?package st:carries ?stigma .
+  ?stigma  a st:Stigma , ex:UrgencyStigma ; st:concentration ?conc .
+  ex:Clock rdf:value ?clocktime .
+}
+INSERT{
+  ?deliveryNotice a ex:DeliveryNotice ; ex:package ?package ; ex:deadline ?deadline ; ex:timePassed ?timePassed ; ex:timeLeft ?timeLeft .
+  ex:Clock rdf:value ?endTime.
+}
+WHERE {
+  {SELECT (UUID() as ?deliveryNotice) ?task WHERE {
+      ?task a ex:Task , ex:DeliverTask .
+  }}
+  ?task a ex:Task , ex:DeliverTask ; ex:assignedTo ?truck ; ex:startTime ?startTime ; ex:endTime ?endTime ; ex:package ?package.
+  ?package a ex:Package ; ex:located ?location .
+  OPTIONAL {  ex:Clock rdf:value ?clocktime . }
+  BIND(IF(bound(?clocktime), ?clocktime, 0) as ?timePassed)
+  OPTIONAL {
+      ex:Clock rdf:value ?clocktime .
+      BIND(IF(bound(?clocktime), ?clocktime, 0) as ?timePassed)
+      ?goal a ex:Goal ; ex:payload ?package ; ex:deadline ?deadline .
+      BIND((?deadline - ?timePassed) as ?timeLeft ) .
+  }
+  OPTIONAL {
+      ?package st:carries ?stigma .
+      ?stigma  a st:Stigma , ex:UrgencyStigma ; st:concentration ?conc .
+      FILTER (isBlank(?stigma))
+  }
+  FILTER NOT EXISTS {
+    ?otherTask a ex:Task ; ex:endTime ?earlier .
+    FILTER (?earlier < ?endTime)
+  }
+}

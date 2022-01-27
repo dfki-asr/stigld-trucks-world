@@ -1,0 +1,30 @@
+prefix ex: <http://example.org/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix st: <http://dfki.de/stigld#>
+prefix stigFN: <http://www.dfki.de/func#>
+
+##################################################################
+# UNLOAD UNTIL PARCEL IN TRUNK THAT BELONGS TO LOCATION IS UNLOADED
+##################################################################
+
+INSERT {
+	?task a ex:Task , ex:UnloadTask ; ex:startTime ?now ; ex:endTime ?endTime ; ex:assignedTo ?truck .
+}
+WHERE {
+
+	{SELECT (UUID() as ?task) ?truck WHERE {
+		?truck a ex:Truck ; ex:located ?location .
+		FILTER NOT EXISTS {
+			?anyTask ex:assignedTo ?truck .
+		}
+	}}
+
+	?truck a ex:Truck  ; ex:areas ?area ; ex:located ?location .
+	?package ex:located ?area .
+	?goal ex:payload ?package ; ex:destination ?location .
+
+	OPTIONAL { ex:Clock rdf:value ?clocktime	}
+	BIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)
+	BIND((?now + 0.2) as ?endTime )
+}

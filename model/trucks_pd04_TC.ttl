@@ -1,0 +1,91 @@
+prefix ex: <http://example.org/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix st: <http://dfki.de/stigld#>
+
+
+ex:confidence a ex:confidenceFactor ; rdf:value "1.5"^^xsd:double .
+ex:Disturbance ex:happens "340.0"^^xsd:double .
+
+ex:truck1 a ex:Truck;
+    ex:areas ex:a1, ex:a2;
+    ex:located ex:l2.
+
+ex:a1 a ex:Area;
+    ex:position 1 ;
+    ex:status ex:empty .
+
+ex:a2 a ex:Area;
+    ex:position 2 ;
+    ex:status ex:empty .
+
+ex:package1 a ex:Package;
+    ex:located ex:l2.
+
+ex:package2 a ex:Package;
+    ex:located ex:l2.
+
+ex:package3 a ex:Package;
+    ex:located ex:l3.
+
+ex:package4 a ex:Package;
+    ex:located ex:l3.
+
+ex:package5 a ex:Package;
+        ex:located ex:l3.
+
+ex:package6 a ex:Package;
+        ex:located ex:l3.
+
+ex:l1 a ex:Location;
+    st:adjacentTo   ex:l2, ex:l3;
+    ex:driveTime   [a ex:pairValue;
+                     ex:destination ex:l2;
+                     rdf:value  "158.5"^^xsd:double];
+    ex:driveTime   [a ex:pairValue;
+                     ex:destination ex:l3;
+                     rdf:value  "89"^^xsd:double].
+
+ex:l2 a ex:Location;
+    st:adjacentTo   ex:l1, ex:l3;
+    ex:driveTime   [a ex:pairValue;
+                     ex:destination ex:l1;
+                     rdf:value  "158.5"^^xsd:double];
+    ex:driveTime   [a ex:pairValue;
+                     ex:destination ex:l3;
+                     rdf:value  "97.7"^^xsd:double].
+
+ex:l3 a ex:Location;
+    st:adjacentTo   ex:l2, ex:l1;
+    ex:driveTime   [a ex:pairValue;
+                     ex:destination ex:l2;
+                     rdf:value  "97.7"^^xsd:double];
+    ex:driveTime   [a ex:pairValue;
+                     ex:destination ex:l1;
+                     rdf:value  "89"^^xsd:double].
+ex:g1 a ex:Goal;
+    ex:payload ex:package1;
+    ex:destination ex:l3;
+    ex:deadline "107.5"^^xsd:double .
+
+ex:g2 a ex:Goal;
+    ex:payload ex:package2;
+    ex:destination ex:l3 .
+
+ex:g3 a ex:Goal;
+    ex:payload ex:package3;
+    ex:destination ex:l1 .
+
+ex:g4 a ex:Goal;
+    ex:payload ex:package4;
+    ex:destination ex:l1;
+    ex:deadline "205.4"^^xsd:double .
+
+ex:g5 a ex:Goal;
+    ex:payload ex:package5;
+    ex:destination ex:l1.
+
+ex:g6 a ex:Goal;
+    ex:payload ex:package6;
+    ex:destination ex:l2;
+    ex:deadline "575.7"^^xsd:double .

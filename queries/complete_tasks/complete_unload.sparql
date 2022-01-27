@@ -1,0 +1,48 @@
+prefix ex: <http://example.org/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix st: <http://dfki.de/stigld#>
+prefix stigFN: <http://www.dfki.de/func#>
+
+DELETE {
+	?finishedTask a  ex:Task , ex:UnloadTask ; ex:startTime ?started ; ex:endTime ?ended ; ex:assignedTo ?truck .
+    ?area ex:status ex:occupied .
+	?package ex:located ?area .
+	ex:Clock rdf:value ?clocktime .
+}
+INSERT {
+	?package ex:located ?location .
+  ?area ex:status ex:empty .
+	?deliverTask a ex:Task,  ex:DeliverTask ; ex:startTime ?ended ; ex:endTime ?endDeliver ; ex:assignedTo ?truck ; ex:package ?package .
+	ex:Clock rdf:value ?ended.
+}
+WHERE {
+	?finishedTask a ex:Task,  ex:UnloadTask ; ex:startTime ?started ; ex:endTime ?ended ; ex:assignedTo ?truck .
+
+	?truck a ex:Truck ; ex:located ?location .
+    ?area ex:status ex:occupied .
+  OPTIONAL {  ex:Clock rdf:value ?clocktime . }
+	{SELECT ?truck ?area ?package WHERE {
+		?truck a ex:Truck ; ex:located ?location ; ex:areas ?area .
+		?area a ex:Area ; ex:position ?position .
+		?package ex:located ?area .
+		FILTER NOT EXISTS {
+			?truck ex:areas ?otherArea .
+			?otherArea a ex:Area ; ex:position ?closerPosition .
+			?otherPackage ex:located ?otherArea .
+			FILTER (?closerPosition < ?position )
+		}
+	}}
+
+	OPTIONAL {SELECT DISTINCT (UUID() as ?deliverTask) ?package ?truck ?location WHERE {
+	  ?truck ex:located ?location ; ex:areas ?area .
+		?package ex:located ?area .
+		?goal a ex:Goal  ; ex:payload ?package ; ex:destination ?location .
+	}}
+
+	FILTER NOT EXISTS {
+		?otherTask a ex:Task ; ex:endTime ?earlier .
+		FILTER (?earlier < ?ended)
+	}
+	BIND((?ended + 0.2) as ?endDeliver )
+}

@@ -1,0 +1,12 @@
+prefix ex: <http://example.org/> 
+prefix xsd: <http://www.w3.org/2001/XMLSchema#> 
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix st: <http://dfki.de/stigld#> 
+prefix stigFN: <http://www.dfki.de/func#>
+INSERT{
+  ex:start a ex:startTime; rdf:value ?startTime
+}
+WHERE{
+  OPTIONAL{?t a ex:startTime; rdf:value ?val.}
+  BIND(IF((bound(?val)), ?val, NOW()) as ?startTime)
+}

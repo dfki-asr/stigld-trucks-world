@@ -1,0 +1,44 @@
+prefix ex: <http://example.org/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix st: <http://dfki.de/stigld#>
+prefix stigFN: <http://www.dfki.de/func#>
+
+INSERT {
+	?task a ex:Task , ex:MoveTask ; ex:assignedTo ?truck ; ex:destination ?destination ; ex:startTime ?now ; ex:endTime ?endTime .
+}
+WHERE {
+
+	{SELECT DISTINCT ?truck (UUID() as ?task) WHERE {
+		?truck a ex:Truck .
+	}}
+
+	?truck a ex:Truck ; ex:areas ?closestLoaded ; ex:located [
+			a ex:Location ; st:adjacentTo ?destination ; ex:driveTime [
+				ex:destination ?destination ;
+				rdf:value ?driveTime
+			]
+		] .
+
+	FILTER NOT EXISTS {
+		?anyTask a ex:Task ; ex:assignedTo ?truck .
+	}
+	FILTER NOT EXISTS {
+		?truck ex:areas [ ex:status ex:empty ] .
+	}
+
+	?package a ex:Package ; ex:located ?closestLoaded .
+	?closestLoaded ex:position ?closestPosition .
+
+	?goal a ex:Goal ; ex:payload ?package ; ex:destination ?destination .
+	FILTER NOT EXISTS {
+		?truck ex:areas ?closerArea .
+		?closerPackage a ex:Package ; ex:located ?closerArea .
+		?closerArea ex:position ?closerPosition .
+		FILTER (?closerPosition < ?closestPosition)
+	}
+
+  OPTIONAL { ex:Clock rdf:value ?clocktime	}
+	BIND(IF(bound(?clocktime), ?clocktime, 0) as ?now)
+	BIND((?now + ?driveTime) as ?endTime )
+}
